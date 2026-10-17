@@ -38,11 +38,13 @@ py -3.13 --version
 git clone https://github.com/AICoder-xx/entropy-pilot.git
 cd entropy-pilot
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-live.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe dashboard.py
 ```
 
-**http://127.0.0.1:8765/**에 접속합니다. 가상 환경의 Python을 직접 호출하므로 `Activate.ps1` 실행이나 PowerShell 실행 정책 변경이 필요 없습니다. 소스를 내려받아 압축을 푼 뒤 `install.bat`, `run_dashboard.bat` 순서로 더블 클릭해도 됩니다.
+[http://127.0.0.1:8765/](http://127.0.0.1:8765/)에 접속합니다. 가상 환경의 Python을 직접 호출하므로 `Activate.ps1` 실행이나 PowerShell 실행 정책 변경이 필요 없습니다. 소스를 내려받아 압축을 푼 뒤 `install.bat`, `run_dashboard.bat` 순서로 더블 클릭해도 됩니다.
+
+`run_dashboard.bat` 또는 `dashboard.py`로 백엔드를 시작한 다음 위 주소를 여세요. `dashboard/index.html`을 직접 더블 클릭하면 백엔드에 연결할 수 없습니다. 읽기 전용 잠금이 걸린 것이 아니므로 정상 시작 경로로 다시 실행하세요.
 
 일반 모드에서는 설정을 저장할 수 있습니다. 새 설치는 정지 상태지만, **기존 실행 디렉터리는 저장된 제어 상태에 따라 복구를 시작할 수 있습니다**. 먼저 실제 상태를 확인하세요. 브라우저 탭을 닫아도 서비스나 거래 프로세스가 정지하지 않습니다.
 
@@ -66,8 +68,9 @@ py -3 -m venv .venv
 
 | 파일 | 용도 |
 |---|---|
-| `config.example.json` | 개인 키가 없는 일반 모의 거래 템플릿 |
-| `config.json`, `config.market_maker.json`, `config.grid.json` | 공개 CLI 설정, 기본 모드 `paper` |
+| `config.json` | 기본 CLI 및 마켓 메이킹 모의 거래 설정. 개인 키는 포함하지 않음 |
+| `config.grid.json` | 그리드 모의 거래 설정 |
+| `config.live.example.json` | 대시보드가 읽는 실거래 템플릿. 인증 정보가 비어 있으므로 먼저 로컬 지갑을 설정해야 함 |
 | `dashboard.config.json` | 저장한 로컬 대시보드 예산 |
 | `dashboard.config.example.json` | 로컬 예산 파일이 없을 때 사용하는 소액 기본값 |
 | `wallet.local.json` | GUI가 저장하는 로컬 인증 정보. 형식은 `wallet.example.json` 참고 |
@@ -85,7 +88,7 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe main.py --config config.json --check
 
 # 모의 거래: 실제 주문 없음
-.\.venv\Scripts\python.exe main.py --config config.market_maker.json
+.\.venv\Scripts\python.exe main.py --config config.json
 .\.venv\Scripts\python.exe main.py --config config.grid.json
 
 # 저장·거래 제어·자동 복구가 없는 읽기 전용 화면
@@ -115,12 +118,6 @@ py -3 -m venv .venv
 
 링크 사용은 선택 사항입니다. 프로그램은 추천인 연결에 자동 서명하거나 기존 추천 관계를 변경하지 않고 builder 수수료도 추가하지 않습니다. 추천 혜택과 개인 등급 혜택은 공식 규칙에 따라 더 높은 쪽을 적용하며 중복 합산하지 않습니다.
 
-## 개발 및 라이선스
+## 라이선스
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m pip check
-```
-
-의존성은 호환성을 검증한 버전으로 고정합니다. 배포 전 허용 목록과 검사 결과를 확인하고, 운영 중인 거래 디렉터리를 그대로 압축하지 마세요. [MIT License](../../LICENSE)를 사용하며 외부 코드 출처와 라이선스는 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)를 참고하세요.
+[MIT License](../../LICENSE)를 사용하며 외부 코드 출처와 라이선스는 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)를 참고하세요.

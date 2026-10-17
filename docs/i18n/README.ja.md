@@ -38,11 +38,13 @@ py -3.13 --version
 git clone https://github.com/AICoder-xx/entropy-pilot.git
 cd entropy-pilot
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-live.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe dashboard.py
 ```
 
-**http://127.0.0.1:8765/** を開きます。仮想環境の Python を直接呼ぶため、`Activate.ps1` の実行や PowerShell 実行ポリシーの変更は不要です。ソースをダウンロードして展開し、`install.bat`、続いて `run_dashboard.bat` をダブルクリックする方法もあります。
+[http://127.0.0.1:8765/](http://127.0.0.1:8765/) を開きます。仮想環境の Python を直接呼ぶため、`Activate.ps1` の実行や PowerShell 実行ポリシーの変更は不要です。ソースをダウンロードして展開し、`install.bat`、続いて `run_dashboard.bat` をダブルクリックする方法もあります。
+
+`run_dashboard.bat` または `dashboard.py` でバックエンドを起動し、上記の URL を開いてください。`dashboard/index.html` を直接ダブルクリックしてもバックエンドには接続できません。これは読み取り専用のロックではなく、通常の起動手順で開き直す必要があります。
 
 通常モードでは設定を保存できます。新規インストールは停止状態ですが、**既存の運用ディレクトリでは保存済み状態に従って復旧する場合があります**。最初に状態を確認してください。ブラウザーのタブを閉じても、サービスや取引プロセスは停止しません。
 
@@ -66,8 +68,9 @@ py -3 -m venv .venv
 
 | ファイル | 用途 |
 |---|---|
-| `config.example.json` | 秘密鍵を含まないペーパートレード例 |
-| `config.json` / `config.market_maker.json` / `config.grid.json` | 公開 CLI 設定。初期値は `paper` |
+| `config.json` | 標準 CLI とマーケットメイクのペーパートレード設定。秘密鍵は含まない |
+| `config.grid.json` | グリッドのペーパートレード設定 |
+| `config.live.example.json` | ダッシュボードが読み込む実取引テンプレート。認証情報は空欄のため、先にローカルでウォレットを設定する |
 | `dashboard.config.json` | 保存したローカル予算 |
 | `dashboard.config.example.json` | ローカル予算ファイルがない場合の小額初期値 |
 | `wallet.local.json` | GUI が保存する認証情報。形式は `wallet.example.json` を参照 |
@@ -85,7 +88,7 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe main.py --config config.json --check
 
 # ペーパートレード。実際の注文は送信しない
-.\.venv\Scripts\python.exe main.py --config config.market_maker.json
+.\.venv\Scripts\python.exe main.py --config config.json
 .\.venv\Scripts\python.exe main.py --config config.grid.json
 
 # 保存、取引操作、自動復旧を禁止する表示モード
@@ -115,12 +118,6 @@ py -3 -m venv .venv
 
 利用は任意です。プログラムは紹介関係の署名登録、既存紹介の変更、builder 手数料の追加を行いません。紹介特典と自身のティア特典は公式規則に従い高い方を適用し、加算しません。
 
-## 開発とライセンス
+## ライセンス
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m pip check
-```
-
-依存関係は互換性確認済みのバージョンに固定しています。配布前に許可リストとスキャン結果を確認し、運用中ディレクトリをそのまま圧縮しないでください。[MIT License](../../LICENSE) を採用しています。第三者の出典とライセンスは [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) を参照してください。
+[MIT License](../../LICENSE) を採用しています。第三者の出典とライセンスは [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) を参照してください。

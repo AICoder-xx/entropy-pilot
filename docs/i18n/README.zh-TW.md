@@ -38,11 +38,13 @@ py -3.13 --version
 git clone https://github.com/AICoder-xx/entropy-pilot.git
 cd entropy-pilot
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-live.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe dashboard.py
 ```
 
-入口為 **http://127.0.0.1:8765/**。直接呼叫虛擬環境的 Python，**不需要啟用 `Activate.ps1` 或變更 PowerShell 執行原則**。也可下載並解壓縮原始碼，雙擊 `install.bat` 安裝，再雙擊 `run_dashboard.bat`。
+入口為 [http://127.0.0.1:8765/](http://127.0.0.1:8765/)。直接呼叫虛擬環境的 Python，**不需要啟用 `Activate.ps1` 或變更 PowerShell 執行原則**。也可下載並解壓縮原始碼，雙擊 `install.bat` 安裝，再雙擊 `run_dashboard.bat`。
+
+請透過 `run_dashboard.bat` 或 `dashboard.py` 啟動後端，再開啟上述網址。直接雙擊 `dashboard/index.html` 無法連接後端；這不是唯讀鎖定，請改由正常入口啟動。
 
 一般模式可儲存設定。全新安裝預設停止；**已有執行記錄的目錄可能依持久狀態自動恢復**，請先確認實際狀態。關閉瀏覽器分頁不會停止服務或機器人。
 
@@ -66,8 +68,9 @@ py -3 -m venv .venv
 
 | 檔案 | 用途 |
 |---|---|
-| `config.example.json` | 不含私鑰的通用模擬盤範本 |
-| `config.json`、`config.market_maker.json`、`config.grid.json` | 公開 CLI 設定，預設 `paper` |
+| `config.json` | 預設命令列與做市模擬設定，模式為 `paper`；不含私鑰 |
+| `config.grid.json` | 網格模擬設定，模式為 `paper` |
+| `config.live.example.json` | 控制台讀取的實盤範本；憑證留白，須先在本機設定錢包 |
 | `dashboard.config.json` | 儲存後的本機風險預算 |
 | `dashboard.config.example.json` | 沒有本機預算檔時使用的小額預設 |
 | `wallet.local.json` | GUI 儲存的本機憑證，格式參考 `wallet.example.json` |
@@ -85,7 +88,7 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe main.py --config config.json --check
 
 # 模擬盤，不送真實訂單
-.\.venv\Scripts\python.exe main.py --config config.market_maker.json
+.\.venv\Scripts\python.exe main.py --config config.json
 .\.venv\Scripts\python.exe main.py --config config.grid.json
 
 # 唯讀，不允許儲存、交易控制或自動恢復
@@ -115,12 +118,6 @@ py -3 -m venv .venv
 
 程式不自動簽名綁定、不變更既有邀請關係、不加入 builder 費用。邀請及自身等級權益按官方規則擇高，不疊加。
 
-## 開發與授權
+## 授權
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m pip check
-```
-
-依賴套件固定於相容性驗證版本。發佈前檢查允許清單與掃描結果，不要直接壓縮使用中的交易目錄。專案採 [MIT 授權](../../LICENSE)，第三方來源與聲明見 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
+專案採 [MIT 授權](../../LICENSE)，第三方來源與聲明見 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。

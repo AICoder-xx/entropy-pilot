@@ -1187,7 +1187,7 @@ class LiveBroker(Broker):
             from hyperliquid.exchange import Exchange
         except ImportError as exc:
             raise RuntimeError(
-                "实盘需要安装 requirements-live.txt（官方 hyperliquid-python-sdk）"
+                "实盘需要安装 requirements.txt（官方 hyperliquid-python-sdk）"
             ) from exc
         wallet = Account.from_key(self.private_key)
         if wallet.address.lower() == self.address:

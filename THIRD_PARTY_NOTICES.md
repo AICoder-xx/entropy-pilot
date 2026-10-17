@@ -9,9 +9,6 @@ commit `aa0391471f6bf72f78c45801fb8117b7bf7e8c89`:
 - Hyperliquid price rounding;
 - client-order-id reconciliation after an uncertain order response.
 
-The detailed source review and the intentionally excluded alternatives are
-documented in [`OPEN_SOURCE_AUDIT.md`](OPEN_SOURCE_AUDIT.md).
-
 The upstream project is licensed under the MIT License:
 
 > MIT License
@@ -38,7 +35,4 @@ The upstream project is licensed under the MIT License:
 
 Live signing uses the official
 [`hyperliquid-python-sdk`](https://github.com/hyperliquid-dex/hyperliquid-python-sdk)
-as an installed dependency. Users may save their API wallet credentials locally
-through the dashboard in `wallet.local.json`, or supply an explicitly configured
-environment file. These files contain secrets and must never be published. The
-public-source build excludes local credentials, account state, and logs.
+as an installed dependency.

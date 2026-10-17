@@ -38,11 +38,13 @@ py -3.13 --version
 git clone https://github.com/AICoder-xx/entropy-pilot.git
 cd entropy-pilot
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-live.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe dashboard.py
 ```
 
-Open **http://127.0.0.1:8765/**. Calling the virtual environment's Python directly avoids `Activate.ps1`; no PowerShell execution-policy change is needed. Alternatively, extract the downloaded source, double-click `install.bat`, then `run_dashboard.bat`.
+Open [http://127.0.0.1:8765/](http://127.0.0.1:8765/). Calling the virtual environment's Python directly avoids `Activate.ps1`; no PowerShell execution-policy change is needed. Alternatively, extract the downloaded source, double-click `install.bat`, then `run_dashboard.bat`.
+
+Start the backend with `run_dashboard.bat` or `dashboard.py`, then open the address above. Double-clicking `dashboard/index.html` cannot connect to the backend; this is not a read-only lock. Use the normal startup entry point instead.
 
 Normal mode allows configuration changes. A fresh installation starts stopped, but **an existing directory may resume from persisted control state**. Check its status first. Closing a browser tab does not stop the service or trading processes.
 
@@ -66,8 +68,9 @@ Public examples use **$12 per side, $30 maximum net position, $30 open orders, a
 
 | File | Purpose |
 |---|---|
-| `config.example.json` | General paper-mode template, without secrets |
-| `config.json`, `config.market_maker.json`, `config.grid.json` | Public CLI configurations; default to `paper` |
+| `config.json` | Default CLI and market-making paper configuration; contains no private key |
+| `config.grid.json` | Grid paper-trading configuration |
+| `config.live.example.json` | Live template read by the dashboard; credentials are blank, so configure a local wallet first |
 | `dashboard.config.json` | Local dashboard budgets, written when saving |
 | `dashboard.config.example.json` | Small defaults when the local file is absent |
 | `wallet.local.json` | Locally saved credentials; see `wallet.example.json` |
@@ -85,7 +88,7 @@ Named wallets use their own JSON credentials. For `primary`, process environment
 .\.venv\Scripts\python.exe main.py --config config.json --check
 
 # Paper trading; no real orders
-.\.venv\Scripts\python.exe main.py --config config.market_maker.json
+.\.venv\Scripts\python.exe main.py --config config.json
 .\.venv\Scripts\python.exe main.py --config config.grid.json
 
 # Read-only dashboard: no saving, trading controls, or recovery
@@ -115,12 +118,6 @@ The author confirms a **75% benefit calculated on Entropy's share of trading fee
 
 The link is optional. The program does not sign referral bindings, replace existing referrals, or add builder fees. Referral and personal-tier benefits follow the official higher-benefit rule rather than stacking.
 
-## Development and license
+## License
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m pip check
-```
-
-Dependencies are pinned to compatibility-tested versions. Check public-build allowlists and scans before distribution; do not archive a live working directory. Licensed under [MIT](../../LICENSE); see [third-party notices](../../THIRD_PARTY_NOTICES.md) for upstream attribution and licenses.
+Licensed under [MIT](../../LICENSE); see [third-party notices](../../THIRD_PARTY_NOTICES.md) for upstream attribution and licenses.

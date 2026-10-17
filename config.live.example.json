@@ -1,6 +1,6 @@
 {
-  "_说明": "新用户模板：默认为模拟盘，无需私钥、不发送订单。实盘前先在面板配置已授权的 API Wallet，并检查预算、账户地址、当前订单与风险。不要直接沿用他人的实盘阈值。",
-  "mode": "paper",
+  "_说明": "面板实盘模板，凭证为空。启动实盘会发送真实订单；请先配置已授权的 API 钱包并检查账户、预算、持仓与挂单。",
+  "mode": "live",
   "strategy": "market_maker",
   "market": {
     "dex": "io",
@@ -111,7 +111,7 @@
     "private_key_env": "HL_API_PRIVATE_KEY",
     "account_address_env": "HL_ACCOUNT_ADDRESS",
     "wallet_id": null,
-    "env_file": ".env"
+    "env_file": null
   },
   "_配置方法": "复制为自己的 config 文件；单钱包可用 wallet.local.json，或复制 .env.example 为 .env。密钥不放在本文件。纸盘验证成功不代表策略盈利。",
   "_邀请码": "https://entropy.io/?r=traderx；在官网自愿完成注册和绑定，代码不会自动绑定，也不承诺等级、返佣或收益。"

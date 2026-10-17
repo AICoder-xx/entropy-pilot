@@ -4,7 +4,7 @@ cd /d "%~dp0"
 set PYTHONIOENCODING=utf-8
 set PYTHONUTF8=1
 if not exist ".venv\Scripts\python.exe" goto need_install
-".venv\Scripts\python.exe" main.py --config config.market_maker.json
+".venv\Scripts\python.exe" main.py --config config.json
 pause
 exit /b %errorlevel%
 :need_install

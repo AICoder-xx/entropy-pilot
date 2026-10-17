@@ -4,3 +4,11 @@ websockets==17.2; python_version >= "3.11"
 websockets==16.1.1; python_version < "3.11"
 tzdata==2026.5
 python-dotenv==1.2.4
+
+hyperliquid-python-sdk==0.24.0
+# SDK 0.24.0 explicitly requires eth-account <0.14 and eth-utils <6.
+eth-account==0.13.7
+requests==2.34.2
+urllib3==2.8.0
+msgpack==1.2.3
+websocket-client==1.9.2

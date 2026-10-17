@@ -14,7 +14,7 @@ if errorlevel 1 goto no_python
 python -m venv .venv
 :install
 ".venv\Scripts\python.exe" -m pip install --upgrade pip
-".venv\Scripts\python.exe" -m pip install -r requirements-live.txt
+".venv\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 goto failed
 echo Install complete.
 pause

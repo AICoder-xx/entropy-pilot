@@ -50,13 +50,15 @@ py -3.13 --version
 git clone https://github.com/AICoder-xx/entropy-pilot.git
 cd entropy-pilot
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-live.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe dashboard.py
 ```
 
-浏览器入口为 **http://127.0.0.1:8765/**。这些命令直接使用虚拟环境的 Python，**无需运行 `Activate.ps1`，也无需修改 PowerShell 执行策略**。
+浏览器入口为 [http://127.0.0.1:8765/](http://127.0.0.1:8765/)。这些命令直接使用虚拟环境的 Python，**无需运行 `Activate.ps1`，也无需修改 PowerShell 执行策略**。
 
 也可以下载并解压源码后，双击 `install.bat` 安装，再双击 `run_dashboard.bat` 打开。正常模式可以保存配置；`--read-only` 仅用于预览。
+
+请通过 `run_dashboard.bat` 或 `dashboard.py` 启动后端，再访问上述网址。直接双击 `dashboard/index.html` 无法连接后端；这不是只读锁定，重新从正常入口启动即可。
 
 全新安装默认为停止状态。**已有运行目录可能按持久状态自动恢复**，因此重开面板后先看实际状态。关闭浏览器标签不会停止后台服务或机器人。
 
@@ -80,8 +82,9 @@ py -3 -m venv .venv
 
 | 文件 | 用途 |
 |---|---|
-| `config.example.json` | 通用模拟盘模板；不包含私钥 |
-| `config.json`、`config.market_maker.json`、`config.grid.json` | 公开命令行入口配置，默认 `paper` |
+| `config.json` | 默认命令行与做市模拟配置，模式为 `paper`；不包含私钥 |
+| `config.grid.json` | 网格模拟配置，模式为 `paper` |
+| `config.live.example.json` | 面板读取的实盘模板；凭证为空，需先在本机配置钱包 |
 | `dashboard.config.json` | 本机面板预算，保存固定预算时写入 |
 | `dashboard.config.example.json` | 没有本机预算文件时使用的小额默认值 |
 | `wallet.local.json` | GUI 保存的本机凭证；格式参考 `wallet.example.json` |
@@ -99,7 +102,7 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe main.py --config config.json --check
 
 # 模拟盘：不发送真实订单
-.\.venv\Scripts\python.exe main.py --config config.market_maker.json
+.\.venv\Scripts\python.exe main.py --config config.json
 .\.venv\Scripts\python.exe main.py --config config.grid.json
 
 # 只读面板：禁止保存、交易控制和自动恢复
@@ -132,12 +135,6 @@ Windows 也提供 `check_market.bat`、`run_market_maker.bat`、`run_grid.bat`�
 
 是否使用链接由用户自行决定。程序不自动签名绑定推荐人、不改变已有邀请关系、不注入 builder 费用；邀请权益与自身等级权益按官方规则取较高者，不叠加。
 
-## 开发与许可
+## 许可
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m pip check
-```
-
-依赖固定在经过兼容测试的版本。发布前检查允许名单与扫描结果，不要直接压缩正在使用的交易目录。项目使用 [MIT License](LICENSE)；第三方来源及许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+项目使用 [MIT License](LICENSE)；第三方来源及许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
