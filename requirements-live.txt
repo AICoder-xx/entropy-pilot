@@ -1,0 +1,9 @@
+-r requirements.txt
+hyperliquid-python-sdk==0.24.0
+# SDK 0.24.0 explicitly requires eth-account <0.14 and eth-utils <6.
+eth-account==0.13.7
+requests==2.34.2
+urllib3==2.8.0
+msgpack==1.2.3
+websocket-client==1.9.2
+

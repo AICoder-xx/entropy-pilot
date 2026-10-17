@@ -1,0 +1,6 @@
+# Verified 2026-10-17. Python 3.10 remains supported; 3.11+ uses websockets 17.
+aiohttp==3.14.5
+websockets==17.2; python_version >= "3.11"
+websockets==16.1.1; python_version < "3.11"
+tzdata==2026.5
+python-dotenv==1.2.4

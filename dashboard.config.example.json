@@ -1,0 +1,89 @@
+{
+  "defaults": {
+    "risk": {
+      "capital_usd": 100.0,
+      "max_position_usd": 30.0,
+      "max_open_order_usd": 30.0,
+      "min_order_notional_usd": 10.0,
+      "min_free_collateral_usd": 20.0,
+      "max_session_drawdown_usd": 3.0,
+      "max_principal_drawdown_usd": 5.0,
+      "max_oracle_deviation_bps": 150.0,
+      "max_book_spread_bps": 25.0,
+      "max_consecutive_errors": 3,
+      "flatten_on_halt": false,
+      "emergency_slippage_bps": 30.0,
+      "auto_scale_with_equity": false,
+      "auto_scale_max_equity_usd": 100.0,
+      "auto_scale_step_usd": 100.0,
+      "order_notional_pct_of_equity": 25.0,
+      "order_notional_cap_usd": 12.0,
+      "max_position_pct_of_equity": 60.0,
+      "max_open_order_pct_of_equity": 52.0,
+      "min_free_collateral_pct_of_equity": 10.0,
+      "max_session_drawdown_pct_of_equity": 2.5,
+      "max_principal_drawdown_pct_of_equity": 6.0,
+      "max_rolling_drawdown_usd": 2.0,
+      "rolling_drawdown_window_min": 30.0,
+      "daily_loss_budget_usd": 3.0
+    },
+    "market_maker": {
+      "levels": 1,
+      "order_notional_usd": 12.0,
+      "half_spread_bps": 3.0,
+      "level_spacing_bps": 3.0,
+      "inventory_skew_bps_at_limit": 3.0,
+      "rebalance_at_position_ratio": 0.5,
+      "min_edge_after_projected_rebate_bps": 0.5,
+      "refresh_bps": 0.8,
+      "refresh_sec": 1.0,
+      "adaptive_spread_enabled": true,
+      "adaptive_spread_min_samples": 100,
+      "adaptive_spread_window_samples": 200,
+      "adaptive_spread_adjust_every_samples": 100,
+      "adaptive_spread_wear_trigger_bps": 1.0,
+      "adaptive_spread_step_bps": 0.5,
+      "adaptive_spread_max_extra_bps": 3.0,
+      "volatility_guard_range_bps": 20.0,
+      "same_side_fill_cooldown_sec": 10.0,
+      "crisis_quote_notional_usd": 0.0,
+      "crisis_quote_distance_bps": 80.0,
+      "vol_spread_mult": 0.6,
+      "vol_skew_mult": 0.8
+    },
+    "grid": {
+      "anchor_price": null,
+      "levels_each_side": 3,
+      "spacing_bps": 12.0,
+      "order_notional_usd": 12.0,
+      "min_profit_after_projected_rebate_bps": 1.0,
+      "breakout_buffer_bps": 20.0,
+      "recenter_when_flat_bps": 48.0,
+      "level_rearm_bps": 12.0,
+      "inventory_direction": "long"
+    },
+    "fees": {
+      "entropy_self_rebate_pct": 0.0,
+      "entropy_referred_user_benefit_pct": 0.0,
+      "fail_closed_if_user_fees_unavailable": true
+    }
+  },
+  "markets": {
+    "SNDK": {
+      "market": {
+        "target_leverage": 3
+      }
+    },
+    "ANTH": {
+      "market": {
+        "target_leverage": 3
+      },
+      "market_maker": {
+        "half_spread_bps": 4.0
+      },
+      "runtime": {
+        "pause_during_us_regular_session": false
+      }
+    }
+  }
+}

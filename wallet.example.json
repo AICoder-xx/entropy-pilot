@@ -1,0 +1,6 @@
+{
+  "_说明": "复制为 wallet.local.json，或用面板填写。推荐仅填写已授权的 API Wallet 私钥；account_address 填资金主账户地址，不能填 API Wallet 地址。请勿提交、上传或分享填写后的文件。",
+  "_邀请码": "https://entropy.io/?r=traderx（自行在官网完成注册绑定；此字段只是说明，不自动签名、不保证优惠或等级）",
+  "private_key": "",
+  "account_address": ""
+}

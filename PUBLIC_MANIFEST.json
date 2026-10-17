@@ -1,0 +1,422 @@
+{
+  "created_at": "2026-10-17T11:31:11.021258",
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 817,
+      "sha256": "eb1c2591feb1bfb477f40323b2c788a8f3b1842ace006dcce4b922beb8eaa969"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 410,
+      "sha256": "ae0b42f83b843ef1ab1885b43986e02b5d0ecbac5b1e68ce06dca1dd2b8aedc6"
+    },
+    {
+      "path": "analyze_efficiency.py",
+      "bytes": 32426,
+      "sha256": "48027f4b29ead63bd9e86b30cd987fa509bf5e5bf943c7ee84cce91a4782ea31"
+    },
+    {
+      "path": "audit_live.py",
+      "bytes": 41626,
+      "sha256": "3c31ff21fa8eb223b01ecbaf722e6827a8c97a7298eac4d3be9f29d7c76a16f9"
+    },
+    {
+      "path": "audit_local_data.py",
+      "bytes": 7698,
+      "sha256": "8392c1834ef61bc64b89706e8198465d648d4198a4947d29287bfb15f273456e"
+    },
+    {
+      "path": "build_public_release.py",
+      "bytes": 5784,
+      "sha256": "ea91115b173f54e636c14cbbd878641b37a8a224e7cb719d5fbc07c2c5571d7b"
+    },
+    {
+      "path": "check_market.bat",
+      "bytes": 299,
+      "sha256": "d81f702c1c1647454d9ea44993268ef83c0b675dcc0064fd9c498c9bc5963772"
+    },
+    {
+      "path": "config.example.json",
+      "bytes": 4302,
+      "sha256": "b051709c25a053024b564710021f74fca6dba4fdc5e625449a7c18155a93c2c1"
+    },
+    {
+      "path": "config.grid.json",
+      "bytes": 4278,
+      "sha256": "71bedead94b364671cfba920635475cbe03244526dd014faf165bc5a4a153ffb"
+    },
+    {
+      "path": "config.json",
+      "bytes": 4286,
+      "sha256": "fd9966b5ef52ad974bbd5c752a87f992ad958b31aebdc74e9a761abf57e25df0"
+    },
+    {
+      "path": "config.live.stage-a.example.json",
+      "bytes": 4283,
+      "sha256": "6426aec1e9ca228d1969046f5c5ade269fa6cd09f754d5b681b871400fb99931"
+    },
+    {
+      "path": "config.market_maker.json",
+      "bytes": 4286,
+      "sha256": "fd9966b5ef52ad974bbd5c752a87f992ad958b31aebdc74e9a761abf57e25df0"
+    },
+    {
+      "path": "dashboard/index.html",
+      "bytes": 104113,
+      "sha256": "4e610f3a5e19e152b6915a36d8859c12a7663a18f88094d6c22438a31051a9a7"
+    },
+    {
+      "path": "dashboard.config.example.json",
+      "bytes": 2777,
+      "sha256": "55f120142270381d9474939c3c8604d928c9fbe57789c1191823e77cb72a5459"
+    },
+    {
+      "path": "dashboard.py",
+      "bytes": 128595,
+      "sha256": "ad66d5cf90af0a810dc3bba1c1868a5cd57c87f4f011450c9f8419567b68ba9b"
+    },
+    {
+      "path": "dashboard_budget.py",
+      "bytes": 5604,
+      "sha256": "60325fec59ded530a786afe40cbd6521d47e3fc40a7d39d1e320a60b73ee5db7"
+    },
+    {
+      "path": "dashboard_charts.py",
+      "bytes": 3054,
+      "sha256": "566544ae75a004ba5e0154aff30fbdb29d262edb75c333acf126b0153c14d70f"
+    },
+    {
+      "path": "dashboard_setup.py",
+      "bytes": 4843,
+      "sha256": "b60a5794e4a59a0d442f06b7b649ffa1c61293fd9cbd41bf7b8feea575706163"
+    },
+    {
+      "path": "docs/i18n/README.en.md",
+      "bytes": 11006,
+      "sha256": "3a25370f75cadbecc1dc56f84972182190015b24f30936d40fe1468290b44da0"
+    },
+    {
+      "path": "docs/i18n/README.ja.md",
+      "bytes": 13524,
+      "sha256": "1f8c39fcf83cb1f2e5e7cda783e2bb7ef0a6009fb383cc358b283b5e79a92232"
+    },
+    {
+      "path": "docs/i18n/README.ko.md",
+      "bytes": 13068,
+      "sha256": "504dccf7a78ec9f73aba05fc4478e24f9a7d3e012094d4b62c70ce1863e91ba2"
+    },
+    {
+      "path": "docs/i18n/README.zh-TW.md",
+      "bytes": 9802,
+      "sha256": "a8e06bb228b623bcc7f14fc5bf4e5f469aa1fb099d64722c87cba0eae41e5e59"
+    },
+    {
+      "path": "entropy_bot/__init__.py",
+      "bytes": 69,
+      "sha256": "ec1180cb807ecf85218a23fced73aa8752ac36cd7014d5ee7a9f5573c57afd25"
+    },
+    {
+      "path": "entropy_bot/broker.py",
+      "bytes": 149898,
+      "sha256": "acba82bbffa99f765e1539e294f7eebfb00aef83c2c30e3d3a24684d3f55c365"
+    },
+    {
+      "path": "entropy_bot/config.py",
+      "bytes": 34551,
+      "sha256": "b6bb33c59a6a5b43a2330f70ada63fcd53dbbe22a259282ebcd0daec83f85123"
+    },
+    {
+      "path": "entropy_bot/credentials.py",
+      "bytes": 11476,
+      "sha256": "42fc9867e75a7d44606426c1f0a611f7d75aa12b0ec244a27cf135ba09b17273"
+    },
+    {
+      "path": "entropy_bot/engine.py",
+      "bytes": 89082,
+      "sha256": "6dc0cfb847cbc7d1b608c1bc9792e861a33347c8796c6f773c61e881ffaa4f37"
+    },
+    {
+      "path": "entropy_bot/fees.py",
+      "bytes": 2527,
+      "sha256": "ca3b16cc26d44d8fe899245e0fec4d09b9e72b04de8f1d941432a1b7744e758a"
+    },
+    {
+      "path": "entropy_bot/grid_accounting.py",
+      "bytes": 26808,
+      "sha256": "dd48601030ad4e1045ad7ab548509c0ccfa94b7c6b4bde1e03b320fee92cbd19"
+    },
+    {
+      "path": "entropy_bot/grid_runtime.py",
+      "bytes": 15026,
+      "sha256": "c50c26a99e1a12b241bd91ecf7543c3b3a9cd1f8850b3928e7a1626a3fc7f51b"
+    },
+    {
+      "path": "entropy_bot/instance_lock.py",
+      "bytes": 1266,
+      "sha256": "08fee69e1533c317802544af9b2836f28ac29239b2fbffcf81e703764ab02ae8"
+    },
+    {
+      "path": "entropy_bot/market.py",
+      "bytes": 28534,
+      "sha256": "d8719e281d89b430f65378cdc5ca73186a4eae0aef3869f3cd92851a44537e77"
+    },
+    {
+      "path": "entropy_bot/models.py",
+      "bytes": 8179,
+      "sha256": "79b47ec7d1b87edec31fac6ee5471b6964d14802533eafc6144b1ce266a49fe4"
+    },
+    {
+      "path": "entropy_bot/pacing.py",
+      "bytes": 4143,
+      "sha256": "630aac67bb50a6da01af331e87ee8c547d31c350da0293f9889bd0a2c1b57a54"
+    },
+    {
+      "path": "entropy_bot/sizing.py",
+      "bytes": 3642,
+      "sha256": "90ee017c5748a1d6f7ee07cae3b22b9c2808ad6f39bca48829b924f90fdaddd9"
+    },
+    {
+      "path": "entropy_bot/storage.py",
+      "bytes": 18731,
+      "sha256": "278c78066b6f5dcf3c3c4333fc2da0d3f0168de721ec2d5c2ac57bf6279d40db"
+    },
+    {
+      "path": "entropy_bot/strategies.py",
+      "bytes": 45867,
+      "sha256": "5b35c22d43899156831167c90fa942c025ccd0ee343a905a2fd607a187f479e2"
+    },
+    {
+      "path": "entropy_bot/trading_schedule.py",
+      "bytes": 4003,
+      "sha256": "bd69b6acfbd12e6750d532af6b4ba597413b5a1cfa50afabb035146f0d2909ff"
+    },
+    {
+      "path": "install.bat",
+      "bytes": 655,
+      "sha256": "25f8607bc2250eba10d0073638ae2122e0d34eb82ebdda42816dbb1b2a28d7bc"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1084,
+      "sha256": "03daa43b66eded79221cc30e248e70f6f9386ed80a55bb186e5d5ad8aa1535a4"
+    },
+    {
+      "path": "main.py",
+      "bytes": 4490,
+      "sha256": "150870531a4c0c748db9e50fb95ccecbb16dd7d3802337ca80bef11de637ef36"
+    },
+    {
+      "path": "OPEN_SOURCE_AUDIT.md",
+      "bytes": 2366,
+      "sha256": "bafe61b4810061a883a3f4cea90ea84f4f71aad5890f52eecb51dd90c0cd9777"
+    },
+    {
+      "path": "pytest.ini",
+      "bytes": 102,
+      "sha256": "23db5b89d6af381e94a3be74b79a20ebbae99a89b2b2020c8b2397b1e2b653cb"
+    },
+    {
+      "path": "README.md",
+      "bytes": 11233,
+      "sha256": "b8693a47e19b14894cae242e3d6b53e1a32b3019598faeebd572369ad419066d"
+    },
+    {
+      "path": "README_PUBLIC.md",
+      "bytes": 11233,
+      "sha256": "b8693a47e19b14894cae242e3d6b53e1a32b3019598faeebd572369ad419066d"
+    },
+    {
+      "path": "recover_stopped_fills.py",
+      "bytes": 35731,
+      "sha256": "8512c35ea4f0569fea1a17c9d025f1a9e6b383f58b308a7d38c5a885f860d378"
+    },
+    {
+      "path": "recover_stopped_orders.py",
+      "bytes": 7263,
+      "sha256": "29682a6134e033b6550fcd282e5be0adea114998255c2bf1df2c05adf5dd33ce"
+    },
+    {
+      "path": "requirements-live.txt",
+      "bytes": 212,
+      "sha256": "cca11bab74c434a354df8f4ecf6310a15bdb3a4b29e7874e1b919b7257aa1b9e"
+    },
+    {
+      "path": "requirements-lock-2026-10-17.txt",
+      "bytes": 927,
+      "sha256": "56800e90c3c6a9e51902ab28e6d7e8b1865869a8e787fa590d1c296739a28501"
+    },
+    {
+      "path": "requirements-test.txt",
+      "bytes": 58,
+      "sha256": "325f86f7fb7f1f5a4a0b487f7c20e9f431d9e6dd3674b22048eacf474166936f"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 219,
+      "sha256": "558a7a60ad31c4e5999df2a35ba654ced16a7d873c5d2c805e4e4016c627ff0a"
+    },
+    {
+      "path": "run_dashboard.bat",
+      "bytes": 273,
+      "sha256": "00078e46bbfe42638fa56ac07cb1ebcd9be8bdc7c4a11430f828dea8a78e5ecd"
+    },
+    {
+      "path": "run_grid.bat",
+      "bytes": 296,
+      "sha256": "5158625f14994823a760c8decc2f026be315548885140c5420b79b416f202777"
+    },
+    {
+      "path": "run_market_maker.bat",
+      "bytes": 304,
+      "sha256": "ea98186cb430b1b52d92411e6bf97b1dd1a051a6c0650b90feb085fc672221b4"
+    },
+    {
+      "path": "tests/test_analyze_efficiency.py",
+      "bytes": 11410,
+      "sha256": "ed12212a2af0b736416912773c6acbe6e483f2bb3f40e9cd665165175f7c5df2"
+    },
+    {
+      "path": "tests/test_audit_live.py",
+      "bytes": 17707,
+      "sha256": "4a7dc426068d3b249f9f3d4a4b01eeee06d368c34cd22ae49f864a3ee6de8c9f"
+    },
+    {
+      "path": "tests/test_audit_local_data.py",
+      "bytes": 1462,
+      "sha256": "b808aa3d1dfe26fd3096a746369dca452ccce525b591e6e7f32eb14fedd61915"
+    },
+    {
+      "path": "tests/test_broker.py",
+      "bytes": 81039,
+      "sha256": "11bbd813d6c896bcfda3be2b12c15c4794192725dfa9730eb3c43da847e4397d"
+    },
+    {
+      "path": "tests/test_config.py",
+      "bytes": 2184,
+      "sha256": "3fc23d5a942fb6e81d7f744fd4f25c4d4c2097c0684259d539931c125e6f385f"
+    },
+    {
+      "path": "tests/test_core_audit_regressions.py",
+      "bytes": 15194,
+      "sha256": "1e2ff1178987f95f357f7462169151dc65f3e45fe7c868277e613de89472aad8"
+    },
+    {
+      "path": "tests/test_credentials.py",
+      "bytes": 12209,
+      "sha256": "4255732a432577209168be1e2471f232083ed988d26b09b217648a4a5119196d"
+    },
+    {
+      "path": "tests/test_dashboard.py",
+      "bytes": 69798,
+      "sha256": "ec77da19b6ff719b209d087e6671cd8806b777ac800c3e7c8829cbb58aef3ec2"
+    },
+    {
+      "path": "tests/test_dashboard_budget.py",
+      "bytes": 12106,
+      "sha256": "7c9c4c77ebc746dd6c4c087ce6af74cd4f3224930521d85e6e512bcdd90dd4e8"
+    },
+    {
+      "path": "tests/test_dashboard_charts.py",
+      "bytes": 1070,
+      "sha256": "ffc3399ca94a788f002734438a1e4e8b59d5f957e5532310329defed7be9223c"
+    },
+    {
+      "path": "tests/test_dashboard_setup.py",
+      "bytes": 10241,
+      "sha256": "39c0fe9f342937507fab74428c15bbe9e298c7846a2136b5e38271055df9f1f3"
+    },
+    {
+      "path": "tests/test_engine_control.py",
+      "bytes": 41266,
+      "sha256": "664862c5d4430c88c7025511bdd993da4dcc6dde79e4bd8e0b587e9af0e8bb52"
+    },
+    {
+      "path": "tests/test_fees.py",
+      "bytes": 1534,
+      "sha256": "2e51bee7d849cc62b09afc06cd419143f8c6928fbf5c160ebe210a18b955613c"
+    },
+    {
+      "path": "tests/test_grid_accounting.py",
+      "bytes": 17971,
+      "sha256": "aac4944070fedaa87b1b93ebeace107112e89f1ef8826ff6772eb7ee36c95864"
+    },
+    {
+      "path": "tests/test_grid_runtime.py",
+      "bytes": 21542,
+      "sha256": "82423cc7f8ce98de9d022e398d8db7fdccb359f09a59f72e691bf343e41e65b7"
+    },
+    {
+      "path": "tests/test_inventory_grid.py",
+      "bytes": 7747,
+      "sha256": "c13b19ba10baf9cb46d82a00e41651068b07eb47477467e741afba086e950552"
+    },
+    {
+      "path": "tests/test_main_control.py",
+      "bytes": 1469,
+      "sha256": "882702b88324e104403441df3b34c651c2fac29a6166bc046c0de2c285bd024e"
+    },
+    {
+      "path": "tests/test_market.py",
+      "bytes": 8486,
+      "sha256": "74982425d94ae93ec5b5db3d8cc8e42e43b7b56c7b712c8215cbeac2d9e130ee"
+    },
+    {
+      "path": "tests/test_public_release.py",
+      "bytes": 1198,
+      "sha256": "b3131e4d2dc3c1c22193b929ae2c3727e1b5b57ebf48f2161beaad47971ec493"
+    },
+    {
+      "path": "tests/test_recover_stopped_fills.py",
+      "bytes": 25145,
+      "sha256": "e266c9c992599ed96e1817aff81a8c5926732bd92c2aa690a51819ff53ddab23"
+    },
+    {
+      "path": "tests/test_recover_stopped_orders.py",
+      "bytes": 1335,
+      "sha256": "4d4b9d2db9f39ead5cb9fccb6c0855411c762f55ee2fdc95c7f88e6caca7c7ab"
+    },
+    {
+      "path": "tests/test_sizing.py",
+      "bytes": 2121,
+      "sha256": "a42cbcd204eb68c7a10053a23193df71743e902ba4211f31802d90c67b865d3c"
+    },
+    {
+      "path": "tests/test_statistics.py",
+      "bytes": 5012,
+      "sha256": "03c7a3707093d13f34e2f2d0fa75ce8364db0162a2e6d74a4d48b72069944e81"
+    },
+    {
+      "path": "tests/test_strategies.py",
+      "bytes": 30342,
+      "sha256": "37f0f655283d536a8557a771e1a21e0c41f67621e885d062e47b48260f17d782"
+    },
+    {
+      "path": "tests/test_trading_schedule.py",
+      "bytes": 3413,
+      "sha256": "872087119167611cab2ed2e155a61480cf081c9c0bfdab2b88d069490d4dac6e"
+    },
+    {
+      "path": "tests/test_ws_and_modify.py",
+      "bytes": 51180,
+      "sha256": "896970d92543f384bdf6239714025ffb511749a26b4c6b308af518bb37d1216a"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 2193,
+      "sha256": "e10b1e80f8ebce2d30c1a3812a98e24b746d5dcd57d54890806959dfdd9607e5"
+    },
+    {
+      "path": "wallet.example.json",
+      "bytes": 446,
+      "sha256": "19ce6813db6e1e7332567fa09cba2ec42e692d8aeed2926ec42b105c1d4bc46d"
+    }
+  ],
+  "checks": {
+    "allowlist_only": true,
+    "no_runtime_data": true,
+    "secret_literal_scan": "passed",
+    "tests_included_in_scan": true
+  },
+  "limits": "允许名单和静态规则不是所有可能秘密的通用检测器；测试中的密钥是合成夹具。"
+}
