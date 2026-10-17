@@ -23,6 +23,7 @@ from .broker import (
     allocation_state,
 )
 from .config import Config
+from .engine_risk import RiskView, risk_reason
 from .credentials import resolve_live_credentials
 from .fees import build_fee_model
 from .grid_runtime import GridRuntime
@@ -37,6 +38,7 @@ from .sizing import (
     scale_config_for_equity,
 )
 from .trading_schedule import TradingScheduleState, us_regular_session_state
+from .recovery import FailureCode, RecoveryState, classify_exception, failure_record_path
 
 log = logging.getLogger("entropy.engine")
 BOOK_RECONNECT_GRACE_SEC = 15.0
@@ -88,6 +90,12 @@ class Engine:
         self.start_market_unrealized = 0.0
         self.status = "initializing"
         self.halt_reason_text: str | None = None
+        self.recovery_state = RecoveryState()
+        self._halt_cleanup_complete = False
+        self._last_exit_failure_code = FailureCode.NONE
+        # Flip before entering broker.start(), which may create a signer and
+        # mutate leverage. Missing/older startup records never prove read-only.
+        self._startup_read_only = True
         self._errors = 0
         self._last_context = 0.0
         self._last_sync = 0.0
@@ -125,7 +133,7 @@ class Engine:
         # Inventory aging (stage 3): time the position first breached the
         # rebalance threshold, and the last active-reduction clip.
         self._inventory_breach_since: float | None = None
-        self._last_inventory_ioc = 0.0
+        self._last_inventory_ioc: float | None = None
         self._book_stale_since: float | None = None
         self._book_stale_reason: str | None = None
         self._last_book_stale_log = 0.0
@@ -258,6 +266,7 @@ class Engine:
             eastern_now=state.eastern_now,
             session_open=state.session_open,
             session_close=state.session_close,
+            recovery_hold=True,
         )
 
     async def _enter_schedule_pause(self, state: TradingScheduleState) -> None:
@@ -294,7 +303,7 @@ class Engine:
         pause: both strategy orders and the market position must be zero.
         """
 
-        if state.reason != RECOVERY_HOLD_REASON:
+        if not state.recovery_hold:
             return None
         assert self.broker and self.snapshot
         if self.broker.orders_by_role:
@@ -309,6 +318,8 @@ class Engine:
         message = f"恢复隔离检查失败: {reason}"
         self.status = "halted"
         self.halt_reason_text = message
+        self.recovery_state = RecoveryState(FailureCode.RECOVERY_HOLD_VIOLATION)
+        self._halt_cleanup_complete = True
         log.error("风险停机: %s", message)
         self._write_summary("halted", message)
         self.stop.set()
@@ -538,6 +549,7 @@ class Engine:
             if not self.grid_runtime.ready():
                 self._write_summary("paused", "网格库存账本未完成启动对账")
                 raise RuntimeError("网格库存账本未完成启动对账；保留原始台账，未启动签名器")
+        self._startup_read_only = False
         await self.broker.start()
         if (
             self.cfg.mode == "live"
@@ -641,29 +653,7 @@ class Engine:
 
     @staticmethod
     def _is_transient_connectivity_error(exc: BaseException) -> bool:
-        """Classify transport failures without swallowing programming errors."""
-
-        current: BaseException | None = exc
-        seen: set[int] = set()
-        while current is not None and id(current) not in seen:
-            seen.add(id(current))
-            if isinstance(
-                current,
-                (
-                    aiohttp.ClientConnectionError,
-                    aiohttp.ServerTimeoutError,
-                    asyncio.TimeoutError,
-                    TimeoutError,
-                ),
-            ):
-                return True
-            if isinstance(current, aiohttp.ClientResponseError) and (
-                current.status in {408, 425, 429}
-                or 500 <= current.status <= 599
-            ):
-                return True
-            current = current.__cause__ or current.__context__
-        return False
+        return classify_exception(exc) is FailureCode.TRANSPORT_UNAVAILABLE
 
     async def _recover_transient_connectivity(self, trigger: BaseException) -> bool:
         """Stay alive and fail closed until official state is authoritative.
@@ -675,7 +665,13 @@ class Engine:
         """
 
         assert self.market and self.snapshot and self.broker
+        if not self._is_transient_connectivity_error(trigger):
+            await self.halt(
+                "恢复请求不是已识别的网络故障", code=classify_exception(trigger)
+            )
+            return False
         reason = "官方连接中断：已禁止新挂单，等待撤单与成交对账恢复"
+        self.recovery_state = RecoveryState(FailureCode.TRANSPORT_UNAVAILABLE)
         self.status = "paused"
         self._write_summary("paused", reason)
         log.error("%s: %s", reason, trigger)
@@ -689,6 +685,20 @@ class Engine:
             clean = await self._cancel_and_reconcile_exit(
                 "连接隔离", timeout_sec=5.0, sleep_sec=0.5
             )
+            if self.stop.is_set() or self._external_stop_reason():
+                return False
+            if not clean:
+                failure = self._last_exit_failure_code
+                if failure not in {
+                    FailureCode.NONE, FailureCode.TRANSPORT_UNAVAILABLE,
+                    FailureCode.ORDER_STATE_UNCERTAIN,
+                }:
+                    await self.halt("连接恢复的撤单核验遇到非网络故障", code=failure)
+                    return False
+                self.recovery_state = RecoveryState(
+                    failure if failure is FailureCode.ORDER_STATE_UNCERTAIN
+                    else FailureCode.TRANSPORT_UNAVAILABLE
+                )
             foreign_orders = int(
                 getattr(self.broker, "official_foreign_orders", 0) or 0
             )
@@ -709,6 +719,7 @@ class Engine:
                             await self._fail_recovery_hold_invariant(hold_reason)
                             return False
                         self._errors = 0
+                        self.recovery_state = RecoveryState()
                         return True
                     if not self.snapshot.book.is_fresh(
                         self.cfg.market.max_book_age_sec
@@ -720,6 +731,8 @@ class Engine:
                     await self.broker.sync(self.market.book, force=True)  # type: ignore[call-arg]
                     self._record_fills()
                     self._record_due_markouts()
+                    if self.stop.is_set() or self._external_stop_reason():
+                        return False
                     self._apply_dynamic_sizing()
                     self._errors = 0
                     risk_reason = self._risk_reason()
@@ -728,6 +741,7 @@ class Engine:
                         return False
                     await self._reconcile(force=True)
                     self.status = "running"
+                    self.recovery_state = RecoveryState()
                     self._write_summary("running")
                     log.warning("官方连接、撤单和成交对账均已恢复；做市继续运行")
                     return True
@@ -736,7 +750,10 @@ class Engine:
                     log.warning("连接恢复仍在等待订单/成交终态: %s", exc)
                 except Exception as exc:
                     if not self._is_transient_connectivity_error(exc):
-                        await self.halt(f"连接恢复流程出现非网络错误: {exc}")
+                        await self.halt(
+                            f"连接恢复流程出现非网络错误: {exc}",
+                            code=classify_exception(exc),
+                        )
                         return False
                     log.warning("官方连接尚未完全恢复: %s", exc)
             now = time.monotonic()
@@ -748,138 +765,23 @@ class Engine:
         return False
 
     def _risk_reason(self, *, ignore_book_staleness: bool = False) -> str | None:
-        assert self.snapshot and self.broker and self.strategy
-        risk = self.cfg.risk
-        if self.cfg.mode == "live":
-            bot_orphans = int(
-                getattr(self.broker, "official_untracked_bot_orders", 0) or 0
-            )
-            if bot_orphans:
-                return f"检测到 {bot_orphans} 笔本机器人遗留挂单未纳入当前映射"
-            foreign_orders = int(
-                getattr(self.broker, "official_foreign_orders", 0) or 0
-            )
-            if foreign_orders:
-                return (
-                    f"检测到 {foreign_orders} 笔同市场非本进程挂单；"
-                    "为避免与外部交易并行已停机"
-                )
-            target = self.cfg.market.target_leverage
-            if target is not None:
-                kind = getattr(self.broker, "official_leverage_type", None)
-                value = getattr(self.broker, "official_leverage_value", None)
-                if kind is not None or value is not None:
-                    if kind != "isolated" or value != target:
-                        return (
-                            f"官方杠杆偏离配置: {kind or 'unknown'} "
-                            f"{value or 0}x，要求 isolated {target}x"
-                        )
-                elif abs(self.broker.account.position_qty) >= self.snapshot.meta.size_step / 2:
-                    return "存在持仓但无法核验官方逐仓杠杆"
-        # Book staleness, spread and oracle deviation are market states, not
-        # account risk: staleness quarantines through _book_recovery_pending
-        # (which only fails closed if resting orders cannot be confirmed
-        # away), spread/deviation through the market-quality pause channel.
+        # Compatibility keyword: feed staleness is quarantined by the market
+        # gate; it must not change the account-risk rules.
         del ignore_book_staleness
-        fair = self.snapshot.fair_px
-        if fair is None:
-            return "无法计算 fair price"
-        position_usd = abs(self.broker.account.position_qty * fair)
-        if position_usd > risk.max_position_usd * 1.02:
-            position_qty = self.broker.account.position_qty
-            orders = list(self.broker.orders_by_role.values())
-            only_reducing = all(
-                order.reduce_only
-                and (
-                    (position_qty < 0 and order.is_buy)
-                    or (position_qty > 0 and not order.is_buy)
-                )
-                for order in orders
-            )
-            recovery_ceiling = (
-                risk.max_position_usd
-                + self.cfg.market_maker.order_notional_usd * 1.10
-            )
-            if not (
-                self.cfg.strategy == "market_maker"
-                and position_usd <= recovery_ceiling
-                and only_reducing
-            ):
-                return (
-                    f"持仓 ${position_usd:.2f} 超过上限 "
-                    f"${risk.max_position_usd:.2f}"
-                )
-        liquidation_px = getattr(self.broker.account, "liquidation_px", None)
-        mark = getattr(self.snapshot, "mark_px", None) or fair
-        if (
-            liquidation_px
-            and mark
-            and position_usd > risk.min_order_notional_usd
-        ):
-            # Margin backstop.  At 3X isolated with the 60%-of-equity position
-            # cap the liquidation price sits ~25-30% away from mark; anything
-            # inside this floor means leverage, margin or position state is
-            # not what this configuration assumes.  Halting flattens the
-            # position (flatten_on_halt) long before the exchange can.
-            distance_pct = abs(mark - liquidation_px) / mark
-            if distance_pct < LIQUIDATION_GUARD_MIN_DISTANCE:
-                return (
-                    f"强平价距离仅 {distance_pct * 100:.1f}%"
-                    f"（低于 {LIQUIDATION_GUARD_MIN_DISTANCE * 100:.0f}% 保护线），"
-                    "杠杆/保证金状态异常"
-                )
-        open_usd = sum(x.price * (x.qty - x.filled_qty) for x in self.broker.orders_by_role.values())
-        if open_usd > risk.max_open_order_usd * 1.02:
-            return f"挂单 ${open_usd:.2f} 超过上限 ${risk.max_open_order_usd:.2f}"
-        principal_drawdown = risk.capital_usd - self.broker.account.equity_actual
-        if principal_drawdown >= risk.max_principal_drawdown_usd:
-            return (
-                f"本金累计回撤 ${principal_drawdown:.2f} 达到停机线 "
-                f"${risk.max_principal_drawdown_usd:.2f}"
-            )
-        if self.start_equity > 0:
-            drawdown = self.start_equity - self.broker.account.equity_actual
-            if drawdown >= risk.max_session_drawdown_usd:
-                return f"实际权益回撤 ${drawdown:.2f} 达到停机线"
-        equity = self.broker.account.equity_actual
-        if risk.max_rolling_drawdown_usd > 0 and equity > 0:
-            # Incident line: losing this much inside a short window is not
-            # ordinary wear (a one-way move, a bug, a pickoff storm).
-            now = time.monotonic()
-            window_sec = risk.rolling_drawdown_window_min * 60.0
-            self._equity_history.append((now, equity))
-            while (
-                self._equity_history
-                and self._equity_history[0][0] < now - window_sec
-            ):
-                self._equity_history.popleft()
-            burst = max(item[1] for item in self._equity_history) - equity
-            if burst >= risk.max_rolling_drawdown_usd:
-                return (
-                    f"{risk.rolling_drawdown_window_min:.0f} 分钟内快速回撤 "
-                    f"${burst:.2f} 达到事故线 ${risk.max_rolling_drawdown_usd:.2f}"
-                )
-        if risk.daily_loss_budget_usd > 0 and equity > 0:
-            # Budget line: slow accumulated wear is an operating cost, not an
-            # incident.  The baseline is shared across both market processes
-            # (same account equity) and survives restarts within the day, so
-            # a restart cannot refill the budget.
-            spent = self._daily_budget_baseline(equity) - equity
-            if spent >= risk.daily_loss_budget_usd:
-                return (
-                    f"当日亏损预算已用尽（${spent:.2f}/"
-                    f"${risk.daily_loss_budget_usd:.2f}，属正常磨损成本上限；"
-                    "次日自动恢复运行）"
-                )
-        if self.cfg.mode == "live" and risk.min_free_collateral_usd > 0:
-            free = self.broker.account.withdrawable
-            if free is None:
-                return "无法核实可用 USDC，按 fail-closed 停机"
-            if free < risk.min_free_collateral_usd:
-                return f"可用 USDC ${free:.2f} 低于保留线 ${risk.min_free_collateral_usd:.2f}"
-        if self._errors >= risk.max_consecutive_errors:
-            return f"连续错误达到 {self._errors} 次"
-        return self.strategy.halt_reason(self.snapshot, self.broker.account)
+        assert self.snapshot and self.broker and self.strategy
+        return risk_reason(RiskView(
+            cfg=self.cfg, snapshot=self.snapshot, account=self.broker.account,
+            orders=self.broker.orders_by_role,
+            official_untracked_bot_orders=int(getattr(self.broker, "official_untracked_bot_orders", 0) or 0),
+            official_foreign_orders=int(getattr(self.broker, "official_foreign_orders", 0) or 0),
+            official_leverage_type=getattr(self.broker, "official_leverage_type", None),
+            official_leverage_value=getattr(self.broker, "official_leverage_value", None),
+            start_equity=self.start_equity, consecutive_errors=self._errors,
+            equity_history=self._equity_history,
+            daily_budget_baseline=self._daily_budget_baseline,
+            strategy_halt_reason=self.strategy.halt_reason,
+            liquidation_min_distance=LIQUIDATION_GUARD_MIN_DISTANCE,
+        ))
 
     async def _manage_aged_inventory(self) -> None:
         """Stage-3 inventory control: actively shed a stuck position.
@@ -913,7 +815,7 @@ class Engine:
             return
         if now - self._inventory_breach_since < INVENTORY_IOC_AFTER_SEC:
             return
-        if now - self._last_inventory_ioc < INVENTORY_IOC_INTERVAL_SEC:
+        if self._last_inventory_ioc is not None and now - self._last_inventory_ioc < INVENTORY_IOC_INTERVAL_SEC:
             return
         self._last_inventory_ioc = now
         book = self.snapshot.book
@@ -1315,6 +1217,7 @@ class Engine:
         self.ledger.write_summary(
             status=status,
             reason=reason,
+            recovery=self.recovery_state.as_dict(self.session_id),
             account=self.broker.account,
             market=self.snapshot,
             fees=self.fees,
@@ -1426,6 +1329,7 @@ class Engine:
         while official state is polled until the mapping reaches a terminal
         state or the bounded reconciliation window expires.
         """
+        self._last_exit_failure_code = FailureCode.NONE
         if not self.broker:
             return True
         deadline = time.monotonic() + timeout_sec
@@ -1448,6 +1352,7 @@ class Engine:
                         getattr(self.broker, "official_foreign_orders", 0) or 0
                     )
                     if foreign_orders:
+                        self._last_exit_failure_code = FailureCode.RISK_LIMIT
                         log.error(
                             "%s发现 %d 笔同市场非本进程挂单；未自动撤销",
                             context,
@@ -1462,6 +1367,7 @@ class Engine:
                 if not self.broker.orders_by_role:
                     return True
             except PendingOrderReconciliation as exc:
+                self._last_exit_failure_code = FailureCode.ORDER_STATE_UNCERTAIN
                 now = time.monotonic()
                 if now >= deadline:
                     log.error("%s对账超过 %.0f 秒: %s", context, timeout_sec, exc)
@@ -1470,9 +1376,11 @@ class Engine:
                     log.warning("%s等待订单/成交终态: %s", context, exc)
                     last_notice = now
             except Exception as exc:
+                self._last_exit_failure_code = classify_exception(exc)
                 log.error("%s撤单未完全确认: %s", context, exc)
                 return False
             if time.monotonic() >= deadline:
+                self._last_exit_failure_code = FailureCode.ORDER_STATE_UNCERTAIN
                 log.error("%s对账超过 %.0f 秒，保留订单映射后退出", context, timeout_sec)
                 return False
             await asyncio.sleep(sleep_sec)
@@ -1483,7 +1391,7 @@ class Engine:
         if (
             not self.broker
             or not self.cfg.runtime.cancel_strategy_orders_on_exit
-            or self.status == "halted"
+            or (self.status == "halted" and self._halt_cleanup_complete)
         ):
             return
         try:
@@ -1504,12 +1412,19 @@ class Engine:
         if not orders_clean:
             self.status = "halted"
             self.halt_reason_text = reason
+            self.recovery_state = RecoveryState(FailureCode.ORDER_STATE_UNCERTAIN)
+        else:
+            self.recovery_state = RecoveryState(
+                self.recovery_state.code, orders_reconciled=True
+            )
+        self._halt_cleanup_complete = True
 
-    async def halt(self, reason: str) -> None:
+    async def halt(self, reason: str, *, code: FailureCode = FailureCode.RISK_LIMIT) -> None:
         if self.status == "halted":
             return
         self.status = "halted"
         self.halt_reason_text = reason
+        self.recovery_state = RecoveryState(code)
         log.error("风险停机: %s", reason)
         if self.broker:
             try:
@@ -1523,6 +1438,9 @@ class Engine:
                     "可能仍有本机器人或同市场外部挂单；需要立即核对官方挂单"
                 )
                 self.halt_reason_text = reason
+                self.recovery_state = RecoveryState(FailureCode.ORDER_STATE_UNCERTAIN)
+            else:
+                self.recovery_state = RecoveryState(code, orders_reconciled=True)
             if self.cfg.risk.flatten_on_halt and self.snapshot:
                 # The stop-loss is only closed-loop if the flatten actually
                 # happens.  A halt often coincides with the exact conditions
@@ -1592,6 +1510,7 @@ class Engine:
                         log.warning("停机前紧急平仓台账记录失败: %s", exc)
 
                 if flatten_uncertain:
+                    self.recovery_state = RecoveryState(FailureCode.ORDER_STATE_UNCERTAIN)
                     reason = (
                         f"{reason}；警告：自动平仓提交结果不确定，"
                         "已保留 cloid 对账身份（若已获取 oid 也已登记）"
@@ -1600,6 +1519,7 @@ class Engine:
                     )
                     self.halt_reason_text = reason
                 elif not flattened:
+                    self.recovery_state = RecoveryState(FailureCode.ORDER_STATE_UNCERTAIN)
                     reason = (
                         f"{reason}；警告：自动平仓 {FLATTEN_RETRY_ATTEMPTS} 次"
                         "均失败，可能存在未平仓位，需要立即人工处理"
@@ -1609,6 +1529,7 @@ class Engine:
                 elif position_before_flatten >= 1e-12 and (
                     not recorded_flatten_fill or final_sync_error is not None
                 ):
+                    self.recovery_state = RecoveryState(FailureCode.ORDER_STATE_UNCERTAIN)
                     reason = (
                         f"{reason}；提示：自动平仓仓位已确认归零，"
                         "但成交明细仍可能延迟；IOC cloid/oid 身份已写入"
@@ -1616,13 +1537,28 @@ class Engine:
                     )
                     self.halt_reason_text = reason
                     log.warning("平仓仓位已归零，但成交明细尚未完整入账")
+        self._halt_cleanup_complete = True
         self._write_summary("halted", reason)
         self.stop.set()
+
+    def _persist_terminal_recovery(self) -> None:
+        if self.control_file and self.control_run_id:
+            atomic_write_json(
+                failure_record_path(self.control_file, self.control_run_id),
+                {
+                    "recovery": self.recovery_state.as_dict(self.control_run_id),
+                    "updated_at_ms": int(time.time() * 1000),
+                },
+            )
 
     async def run(self, duration_sec: float | None = None) -> None:
         try:
             await self.initialize()
-        except BaseException:
+        except BaseException as exc:
+            self.recovery_state = RecoveryState(
+                classify_exception(exc), startup_read_only=self._startup_read_only
+            )
+            self._persist_terminal_recovery()
             if self.session and not self.session.closed:
                 await self.session.close()
             if self.grid_runtime is not None:
@@ -1663,7 +1599,7 @@ class Engine:
                     return
                 await asyncio.sleep(0.1)
             if not self.market.book.ready:
-                await self.halt("15 秒内未收到官方盘口")
+                await self.halt("15 秒内未收到官方盘口", code=FailureCode.TRANSPORT_UNAVAILABLE)
                 return
             self._ever_had_book = True
             await self.market.refresh_context()
@@ -1827,7 +1763,9 @@ class Engine:
                             if not await self._recover_transient_connectivity(exc):
                                 break
                         else:
-                            await self.halt(f"连续主循环错误: {exc}")
+                            await self.halt(
+                                f"连续主循环错误: {exc}", code=classify_exception(exc)
+                            )
                             break
                 self.book_event.clear()
                 try:
@@ -1836,6 +1774,14 @@ class Engine:
                     )
                 except asyncio.TimeoutError:
                     pass
+        except BaseException as exc:
+            # An exception leaving the loop is not a clean stop, even when
+            # cleanup later succeeds. Preserve its actual classification.
+            self.status = "halted"
+            self.halt_reason_text = f"运行异常终止: {type(exc).__name__}"
+            self.recovery_state = RecoveryState(classify_exception(exc))
+            self._persist_terminal_recovery()
+            raise
         finally:
             self.stop.set()
             task.cancel()

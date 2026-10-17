@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from .config import Config
+from .credential_store import STORAGE_LEGACY, read_wallet_document
 
 
 _ADDRESS_RE = re.compile(r"^0x[0-9a-fA-F]{40}$")
@@ -39,19 +39,7 @@ class WalletEntry:
     private_key: str | None = field(repr=False)
     account_address: str | None
     enabled: bool
-
-
-def _load_private_json(path: Path) -> dict | None:
-    if not path.exists():
-        return None
-    try:
-        with path.open("r", encoding="utf-8") as handle:
-            raw = json.load(handle)
-    except (OSError, json.JSONDecodeError) as exc:
-        raise RuntimeError(f"无法读取私密钱包配置文件: {path.name}") from exc
-    if not isinstance(raw, dict):
-        raise RuntimeError(f"私密钱包配置文件顶层必须是对象: {path.name}")
-    return raw
+    storage: str = STORAGE_LEGACY
 
 
 def _optional_text(value: object, field: str) -> str | None:
@@ -65,7 +53,7 @@ def _optional_text(value: object, field: str) -> str | None:
 def read_wallet_entries(path: Path) -> list[WalletEntry]:
     """Read the ignored credentials file without exposing secrets to callers."""
 
-    raw = _load_private_json(path)
+    raw, storage = read_wallet_document(path)
     if raw is None:
         return []
     visible = {key for key in raw if not str(key).startswith("_")}
@@ -81,6 +69,7 @@ def read_wallet_entries(path: Path) -> list[WalletEntry]:
                     raw.get("account_address"), "account_address"
                 ),
                 enabled=True,
+                storage=storage,
             )
         ]
 
@@ -134,6 +123,7 @@ def read_wallet_entries(path: Path) -> list[WalletEntry]:
                     f"wallets[{index}].account_address",
                 ),
                 enabled=enabled,
+                storage=storage,
             )
         )
     return result
@@ -263,7 +253,7 @@ def resolve_live_credentials(
 
     if require_private_key and not private_key:
         raise RuntimeError(
-            f"实盘缺少私钥：请填写 {cfg.live.credentials_file.name} 的 private_key，"
+            "实盘缺少私钥：请在面板“钱包与配置”中填写并保存 API 钱包，"
             f"或设置环境变量 {cfg.live.private_key_env}（也支持 live.env_file 指定的 .env）"
         )
 

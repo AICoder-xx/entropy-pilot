@@ -1,0 +1,443 @@
+/* Beginner help is isolated from the dashboard layout and controls. */
+.nav .guide-entry {
+  padding: 5px 9px;
+  border: 1px solid #cddbec;
+  border-radius: 3px;
+  background: #f7faff;
+  color: #336da8;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.nav .guide-entry:hover {
+  background: #edf4fc;
+}
+.guide-welcome {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 13px 8px;
+  padding: 7px 10px;
+  border: 1px solid #dce6f1;
+  border-radius: 3px;
+  background: #fff;
+  color: #698096;
+  font-size: 11px;
+}
+.guide-welcome > span {
+  flex: 1;
+}
+.guide-welcome button,
+.guide-dialog button,
+.guide-tour-dialog button {
+  font: inherit;
+  cursor: pointer;
+}
+.guide-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid #cdd9e7;
+  border-radius: 3px;
+  background: #fff;
+  color: #426b96;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.guide-button:hover {
+  background: #f1f6fc;
+}
+.guide-button.guide-primary {
+  background: #3478bd;
+  color: #fff;
+  border-color: #3478bd;
+}
+.guide-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+.guide-close {
+  border: 0;
+  background: transparent;
+  color: #7a8da1;
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+  font-size: 20px;
+  line-height: 1;
+}
+.guide-close:hover {
+  background: #eef3f8;
+}
+.guide-dialog {
+  width: min(820px, calc(100vw - 28px));
+  max-width: none;
+  max-height: calc(100dvh - 34px);
+  padding: 0;
+  border: 1px solid #d6e0eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #33465c;
+  box-shadow: 0 16px 60px #17375424;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.guide-dialog::backdrop {
+  background: rgba(35, 50, 70, 0.28);
+}
+.guide-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: guide-enter 0.16s ease-out;
+}
+.guide-center-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  justify-content: space-between;
+  padding: 17px 20px 12px;
+  border-bottom: 1px solid #e5ebf2;
+}
+.guide-center-head h2 {
+  font-size: 17px;
+  font-weight: 650;
+  margin: 0 0 3px;
+}
+.guide-center-head p {
+  margin: 0;
+  color: #8090a3;
+  font-size: 11px;
+}
+.guide-center-body {
+  padding: 16px 20px 22px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+.guide-start-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #dfe8f2;
+  border-radius: 4px;
+  background: #f8fbff;
+}
+.guide-start-row strong {
+  font-size: 12px;
+}
+.guide-start-row p {
+  font-size: 11px;
+  color: #8191a4;
+  margin: 3px 0 0;
+}
+.guide-topics {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 13px 0 2px;
+}
+.guide-topics button {
+  border: 0;
+  background: #f1f5f9;
+  color: #617b96;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+.guide-section {
+  padding: 17px 0 14px;
+  border-bottom: 1px solid #e7edf3;
+  scroll-margin-top: 12px;
+}
+.guide-section:last-child {
+  border-bottom: 0;
+}
+.guide-section h3 {
+  font-size: 14px;
+  font-weight: 650;
+  margin: 0 0 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 9px;
+}
+.guide-section p {
+  margin: 7px 0;
+  color: #6c7f94;
+}
+.guide-section ol,
+.guide-section ul {
+  padding-left: 22px;
+  margin: 8px 0;
+  color: #647a91;
+}
+.guide-section li {
+  margin: 5px 0;
+}
+.guide-section strong {
+  color: #3e5873;
+  font-weight: 600;
+}
+.guide-section .guide-locate {
+  font-size: 10px;
+  font-weight: 400;
+  border: 0;
+  background: transparent;
+  color: #3478bd;
+  white-space: nowrap;
+}
+.guide-terms {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px 1fr;
+  gap: 7px 13px;
+}
+.guide-terms dt {
+  font-weight: 600;
+  color: #4e6882;
+}
+.guide-terms dd {
+  margin: 0;
+  color: #718499;
+}
+.guide-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.guide-compare > div {
+  padding: 10px 12px;
+  border: 1px solid #e2e9f1;
+  border-radius: 4px;
+}
+.guide-compare h4 {
+  margin: 0 0 5px;
+  font-size: 12px;
+}
+.guide-compare p {
+  font-size: 11px;
+  margin: 0;
+}
+.guide-small-note {
+  font-size: 11px;
+  color: #8c9aad !important;
+}
+.guide-faq {
+  margin: 10px 0 0;
+}
+.guide-faq dt {
+  font-weight: 600;
+  margin: 12px 0 3px;
+  color: #506a85;
+}
+.guide-faq dd {
+  margin: 0;
+  color: #76899d;
+}
+.guide-tour-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+  color: #33465c;
+  overscroll-behavior: contain;
+}
+.guide-tour-dialog::backdrop {
+  background: transparent;
+}
+.guide-tour-dialog.guide-missing::backdrop {
+  background: rgba(35, 50, 70, 0.28);
+}
+.guide-spotlight {
+  position: fixed;
+  border: 2px solid #5d91c6;
+  border-radius: 5px;
+  box-shadow: 0 0 0 9999px rgba(32, 49, 70, 0.29);
+  pointer-events: none;
+  transition: border-color 0.2s;
+  animation: guide-ring 2.2s ease-in-out infinite;
+}
+.guide-tour-card {
+  position: fixed;
+  width: 380px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 15px 16px 13px;
+  border: 1px solid #d4dfeb;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 8px 32px #20324c24;
+  font:
+    12px/1.75 "Segoe UI",
+    "Microsoft YaHei",
+    system-ui,
+    sans-serif;
+}
+.guide-tour-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: #7f92a7;
+  font-size: 11px;
+}
+.guide-tour-progress {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #e8eef5;
+  margin: 6px 0 13px;
+}
+.guide-tour-progress > span {
+  height: 100%;
+  display: block;
+  background: #699aca;
+  transition: width 0.2s;
+}
+.guide-tour-card h2 {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 650;
+  margin: 0 0 8px;
+  outline: none;
+}
+.guide-tour-copy {
+  margin: 0;
+  color: #667d94;
+  white-space: pre-line;
+}
+.guide-tour-detail {
+  font-size: 11px;
+  color: #8999ab;
+  margin: 9px 0 0;
+  white-space: pre-line;
+}
+.guide-tour-target-note {
+  min-height: 30px;
+  font-size: 10px;
+  color: #9a854e;
+  margin: 8px 0 0;
+}
+.guide-tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 13px;
+  padding-top: 11px;
+  border-top: 1px solid #e7edf3;
+}
+.guide-tour-actions > div {
+  display: flex;
+  gap: 6px;
+}
+.guide-tour-skip {
+  border: 0;
+  background: transparent;
+  color: #8495a7;
+  padding: 5px 0;
+  font-size: 11px;
+}
+.guide-tour-keyboard {
+  font-size: 10px;
+  color: #9aa7b6;
+  margin-top: 8px;
+}
+.guide-entry:focus-visible,
+.guide-welcome button:focus-visible,
+.guide-dialog button:focus-visible,
+.guide-tour-dialog button:focus-visible {
+  outline: 2px solid #8bb6e2;
+  outline-offset: 2px;
+}
+@keyframes guide-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes guide-ring {
+  50% {
+    border-color: #9bc2e9;
+  }
+}
+@media (max-width: 760px) {
+  .guide-welcome {
+    margin: 5px 9px 8px;
+    gap: 7px;
+    align-items: flex-start;
+  }
+  .guide-welcome > span {
+    font-size: 10px;
+  }
+  .guide-welcome .guide-button {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .guide-dialog {
+    width: calc(100vw - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+  .guide-center-head {
+    padding: 13px 14px 10px;
+  }
+  .guide-center-body {
+    padding: 12px 14px 18px;
+  }
+  .guide-start-row {
+    align-items: flex-start;
+  }
+  .guide-start-row .guide-button {
+    white-space: nowrap;
+  }
+  .guide-terms {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+  .guide-terms dd {
+    margin-bottom: 7px;
+  }
+  .guide-compare {
+    grid-template-columns: 1fr;
+  }
+  .guide-tour-card {
+    padding: 12px 14px;
+  }
+  .guide-tour-keyboard {
+    display: none;
+  }
+  .nav .guide-entry {
+    font-size: 11px;
+    padding: 4px 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guide-dialog[open],
+  .guide-spotlight {
+    animation: none;
+  }
+  .guide-center-body {
+    scroll-behavior: auto;
+  }
+  .guide-tour-progress > span,
+  .guide-spotlight {
+    transition: none;
+  }
+}

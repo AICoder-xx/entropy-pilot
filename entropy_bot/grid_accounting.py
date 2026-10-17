@@ -470,7 +470,9 @@ class GridAccounting:
                 status, reason = "error", state["fatal_reason"]
             verified = status == "ready"
             full_net_known = verified and funding_complete
-            number = lambda value: float(value) if value is not None else None
+            def number(value):
+                return float(value) if value is not None else None
+
             return {
                 "schema_version": SCHEMA_VERSION, "direction": state["direction"],
                 "status": status, "reason": reason, "initialized": state["initialized"],

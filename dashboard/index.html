@@ -1,240 +1,643 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Entropy Pilot · 做市控制台</title><style>
-:root{color-scheme:light;--bg:#f2f4f7;--panel:#fff;--line:#dfe4eb;--text:#243244;--muted:#718096;--green:#20856b;--red:#c85861;--blue:#2b6fc1;--purple:#4c6483;--amber:#a87832}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;height:100vh;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);color:var(--text);font:12px/1.5 "Segoe UI","Microsoft YaHei",system-ui,sans-serif;font-variant-numeric:tabular-nums}button,input,select{font:inherit}a{color:var(--blue);text-decoration:none}button,a,input,select{-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #9bc5f2;outline-offset:2px}button{cursor:pointer;touch-action:manipulation}button:disabled{cursor:not-allowed;opacity:.46}[hidden]{display:none!important}.topbar{flex-shrink:0;min-height:53px;display:flex;align-items:center;gap:21px;padding:9px 14px;border-bottom:1px solid #d5dde7;background:#fff}.brand{font-size:18px;font-weight:650;color:#32475e;white-space:nowrap}.brand em{color:#2e6dbb;font-style:normal;margin-right:7px}.nav{display:flex;gap:3px;align-items:center;flex:1}.nav a{padding:5px 9px;border:1px solid transparent;border-radius:3px;color:#687a90;font-size:12px;white-space:nowrap}.nav a:hover{border-color:#c9d9ec;background:#f3f7fc;color:var(--blue)}.nav a:first-child{background:#edf4fc;color:#2b68ad;border-color:#cee0f4}.header-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.register-link{font-size:11px;white-space:nowrap;margin-left:6px}.badge,.pill{display:inline-block;padding:2px 6px;border:1px solid #d8e1eb;background:#f4f7fa;color:#677b91;border-radius:3px;font-size:10px;white-space:nowrap;line-height:1.5}.badge.ok{background:#eef8f3;border-color:#cfe7d9;color:#288268}.badge.warn{background:#fff8ed;border-color:#e8d8b8;color:#a17530}.badge.bad{background:#fff0f1;border-color:#eccdd0;color:#bd525e}.status-strip{min-height:31px;padding:7px 15px 4px;color:#7b899b;font-size:11px;display:flex;justify-content:space-between;gap:15px}.status-strip .badges{display:flex;gap:6px;flex-wrap:wrap}.notice{margin:5px 13px 8px;padding:7px 10px;background:#fffbf2;border:1px solid #ebdfc5;color:#9c793e;font-size:11px;border-radius:3px}.notice strong{font-weight:600;margin-right:10px}.preview-notice{background:#edf5ff;color:#47719d;border-color:#d3e3f5}.workbench{flex:1;min-height:0;display:grid;grid-template-columns:minmax(248px,.78fr) minmax(470px,2.2fr) minmax(320px,1fr);gap:12px;padding:3px 12px 12px;align-items:start}.col{height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#c1ccd9 transparent;padding-right:3px}.panel,.metric-group{background:#fff;border:1px solid var(--line);border-radius:5px;margin-bottom:11px;overflow:hidden}.panel-head,.metric-group-head{padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #e9edf2;min-height:39px}.panel-head strong,.metric-group-title{font-weight:650;font-size:13px}.panel-head .muted{font-size:10px;text-align:right}.panel-body{padding:12px}.muted,.label{color:var(--muted)}.view-toolbar{padding:10px 12px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:5px;margin-bottom:11px}.view-toolbar label{font-size:12px;font-weight:600;white-space:nowrap}.view-toolbar select{flex:1;min-width:0}.view-toolbar .muted{font-size:10px;white-space:nowrap}.metric-group-head{display:block}.metric-group-sub{display:block;font-size:10px;color:#8997a8;margin-top:3px;line-height:1.7}.scope-dot{display:none}.metric-grid{display:block;padding:0 12px}.card{padding:8px 0;border-bottom:1px solid #edf0f4;display:grid;grid-template-columns:minmax(85px,.95fr) minmax(0,1.1fr);align-items:start;gap:2px 9px;min-width:0}.card:last-child{border-bottom:0}.label{font-size:11px;line-height:1.8}.value{font-size:13px;font-weight:600;text-align:right;overflow-wrap:anywhere;line-height:1.5}.small{grid-column:1/-1;font-size:10px;color:#93a0af;line-height:1.6;overflow-wrap:anywhere}.small:empty{display:none}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.purple{color:var(--purple)}.amber{color:var(--amber)}.metric-group.history .card:first-child{display:block}.metric-group.history .card:first-child .value{text-align:left;font-size:12px;margin:3px 0}.section-icon{height:15px;width:15px;stroke:#5286bc;fill:none;stroke-width:1.6;vertical-align:-3px;margin-right:7px}.empty{text-align:center;padding:28px 10px;color:#96a3b2;font-size:11px}.empty::before{content:"—";display:block;margin-bottom:4px;color:#c3cdda;font-size:18px}.metric-grid>.empty{grid-column:1/-1}
-.chart-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:12px 15px 9px}.chart-stat{padding:0 13px;border-right:1px solid #e6ebf1}.chart-stat:first-child{padding-left:0}.chart-stat:last-child{border:0;padding-right:0}.chart-stat span{display:block;color:#8290a2;font-size:10px}.chart-stat b{display:block;font-weight:600;font-size:19px;margin-top:4px;letter-spacing:-.35px;overflow-wrap:anywhere}.chart-plot{padding:4px 11px 0;min-height:190px}.chart-plot svg{width:100%;height:190px;display:block;overflow:visible}.plot-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:8px 14px 0;color:#6b7c92;font-size:10px}.plot-heading strong{font-weight:500}.chart-legend{display:flex;gap:13px}.legend-key::before{content:"";display:inline-block;width:12px;height:2px;vertical-align:3px;margin-right:5px;background:var(--blue)}.legend-key.net::before{background:var(--red)}.legend-key.fee::before{background:#b79459}.chart-note{padding:7px 14px 11px;color:#91a0b0;font-size:10px;border-top:1px solid #edf0f4;line-height:1.7}.distribution{padding:11px 14px}.distribution-head{display:flex;justify-content:space-between;font-size:11px}.distribution-head b{font-weight:600}.distribution-head small{font-size:10px;color:#8c99aa}.buy-sell-track{display:flex;width:100%;height:7px;background:#eff3f7;overflow:hidden;border-radius:2px;margin:8px 0}.buy-sell-track .buy{background:#63a990}.buy-sell-track .sell{background:#c98b91}.distribution-foot{display:flex;justify-content:space-between;color:#8f9bad;font-size:10px}.strategies{display:flex;gap:6px;margin-bottom:10px}.strategy{flex:1;border:1px solid #d5dfea;background:#f8fafc;color:#5c7189;border-radius:3px;padding:8px;text-align:center}.strategy strong{font-size:12px;font-weight:600}.strategy small{display:none}.strategy.selected{background:#edf4fe;border-color:#8eb4df;color:#2768b1}.strategy-description{font-size:10px;color:#8594a5;margin:6px 0 10px;line-height:1.8}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.action{padding:7px 10px;min-height:32px;border:1px solid #c9d7e6;background:#f6f9fd;color:#4a6b90;border-radius:3px;font-size:11px;font-weight:500}.action:hover{background:#eaf2fc}.start{background:#337aca;border-color:#337aca;color:#fff;flex:1}.start:hover{background:#286cb9}.stop{background:#fff4f4;border-color:#deb8bd;color:#b85a64}.stop:hover{background:#fbe9eb}.control-note{margin-top:9px;color:#95a1b0;font-size:10px;line-height:1.8}.risk{display:block}.risk>div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #edf0f4;align-items:center}.risk>div:last-child{border-bottom:0}.risk .label{font-size:11px}.risk b{font-size:13px;font-weight:600;white-space:nowrap}.risk .muted{font-size:11px}.grid-form{padding:10px 0;border-top:1px solid #e9eef3}.grid-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid-fields label,.setup-fields label{font-size:10px;display:flex;flex-direction:column;gap:4px;color:#7c8ca0}.grid-fields label:first-child,.grid-fields label:nth-child(2){grid-column:1/-1}input,select{background:#fff;color:#36485e;border:1px solid #cfdae7;border-radius:3px;padding:6px 8px;min-height:29px;max-width:100%;font-size:11px}input:disabled,select:disabled{background:#f4f6f9;color:#94a0ae}.grid-fields input,.grid-fields select,.setup-fields input{min-width:0;width:100%}.grid-help{font-size:10px;color:#8a98a9;line-height:1.8;margin-top:9px}.grid-ledger-cards{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;padding:0 14px}.grid-ledger-note{padding:10px 14px;font-size:10px;line-height:1.7;color:#8b99aa}.grid-ledger-cards>.card{grid-template-columns:1fr 1fr}.sidebox+.sidebox{margin-top:14px;border-top:1px solid #e6ecf2;padding-top:13px}.sidehead{display:flex;justify-content:space-between;font-size:11px;font-weight:600;gap:8px}.sidehead b{font-size:12px;font-weight:600}.meter{height:6px;background:#eef2f6;overflow:hidden;margin:8px 0;border-radius:2px}.meter>span{height:100%;display:block}.long .meter>span{background:#72ac98}.short .meter>span{background:#cb9197}.sidegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.sidegrid span{font-size:9px;color:#8c9bad}.sidegrid b{display:block;font-size:11px;font-weight:500;overflow-wrap:anywhere}.risk-scope{font-size:10px;color:#96a2b0;margin-top:10px}.table-wrap{max-height:300px;overflow:auto}table{border-collapse:collapse;width:100%;min-width:860px}th,td{padding:8px 10px;border-bottom:1px solid #edf1f5;text-align:right;white-space:nowrap;font-size:10px}th{position:sticky;top:0;z-index:1;background:#f1f5f9;color:#798ca2;font-weight:500}th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}tr:hover td{background:#f8fbff}tbody tr:last-child td{border-bottom:0}.pill{font-size:9px;padding:1px 4px}.log{font:10px/1.8 Consolas,"Microsoft YaHei",monospace;color:#7c8da2;white-space:pre-wrap;overflow-wrap:anywhere;max-height:210px;overflow:auto;margin:0}.setup-fields{display:grid;gap:10px}.setup-caption{font-size:10px;line-height:1.8;color:#96a2b0;margin-top:10px}.setup-caption code{font:10px Consolas,monospace;color:#7b8ca1}.setup-status{font-size:10px;color:#7d90a7;line-height:1.7}.setup-wallet-section{border-top:1px solid #e8edf3;margin-top:14px;padding-top:11px}.setup-wallet-section h3{margin:0 0 6px;font-size:11px;font-weight:600;color:#657a91}.wallet-item{font-size:10px;padding:4px 0;line-height:1.8;overflow-wrap:anywhere}.wallet-item strong{font-size:11px;font-weight:600}.wallet-item span{color:#91a0b2}.setup-referral{font-size:10px;color:#98a5b5;padding-top:9px;margin-top:10px;border-top:1px solid #e8edf3;line-height:1.8}.toast{display:none;position:fixed;right:20px;bottom:24px;max-width:420px;background:#fff;border:1px solid #bfcfe2;border-radius:4px;padding:12px 15px;box-shadow:0 5px 24px #243c5c18;z-index:20;font-size:12px}.toast.bad{color:var(--red);border-color:#dcaeb6}.footer{flex-shrink:0;font-size:10px;padding:5px 14px;border-top:1px solid #dce4ed;background:#fff;color:#99a6b6;display:flex;justify-content:space-between;gap:12px}.footer a{color:#7796ba}
-@media(min-width:1800px){.workbench{grid-template-columns:minmax(290px,.8fr) minmax(650px,2.5fr) minmax(370px,1fr)}.chart-plot,.chart-plot svg{min-height:210px;height:210px}.chart-stat b{font-size:22px}.card{padding:10px 0}.value{font-size:14px}}
-@media(max-width:1200px){body{height:auto;display:block;overflow:auto}.workbench{min-height:0}.topbar{flex-wrap:wrap;gap:9px 16px}.nav{flex:1}.header-actions{margin-left:auto}.workbench{grid-template-columns:250px minmax(450px,1fr)}.col{height:auto;min-height:0;overflow:visible;padding:0}.col-right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}.col-right .panel{margin:0}.col-right #walletSetup{grid-column:1/-1}.col-right .setup-fields{grid-template-columns:1fr 1fr 1fr}.col-right .setup-wallet-section{display:grid;grid-template-columns:1fr 1fr}.col-right .setup-wallet-section h3{grid-column:1/-1}.col-right #setupCredentialNote{margin:0}.status-strip{display:block}.status-strip .badges{margin-top:4px}}
-@media(max-width:760px){.topbar{padding:9px 11px;gap:7px}.brand{font-size:16px}.nav{order:3;flex-basis:100%;gap:2px}.nav a{font-size:11px;padding:4px 7px}.header-actions .badge{font-size:9px}.register-link{font-size:10px}.workbench{display:flex;flex-direction:column;padding:3px 9px 10px;gap:0}.col{width:100%}.col-mid{order:0}.col-right{order:1;display:block}.col-right .panel{margin-bottom:10px}.col-left{order:2}.col-right .setup-fields{grid-template-columns:1fr}.col-right .setup-wallet-section{display:block}.chart-summary{padding:12px 10px;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.chart-stat{padding-left:0!important}.chart-stat:nth-child(2){border-right:0}.chart-stat b{font-size:19px}.chart-plot,.chart-plot svg{height:170px;min-height:170px}.view-toolbar{padding:9px;gap:6px;flex-wrap:wrap}.view-toolbar .muted{white-space:normal;flex-basis:100%}.status-strip{padding:6px 10px 3px}.notice{margin:5px 9px 8px}.notice strong{display:block}.grid-ledger-cards{grid-template-columns:1fr}.footer{display:block}.footer>span+span{display:block;margin-top:4px}.toast{left:12px;right:12px;bottom:16px;max-width:none}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.metric-group.history .card:first-child{display:block}.card{grid-template-columns:1fr;gap:1px}.value{text-align:left}.small{font-size:9px}.sidegrid span{font-size:10px}.sidegrid b{font-size:12px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Entropy Pilot · 做市控制台</title>
+    <meta name="entropy-control" content="__CONTROL_TOKEN__" />
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+    <link rel="stylesheet" href="/assets/guide.css" />
+  </head>
+  <body data-ui-revision="editable-market-budget-2026-10-17">
+    <header class="topbar" id="top">
+      <a href="#overview" class="brand"><em>Entropy Pilot</em>做市控制台</a>
+      <nav class="nav" aria-label="工作台导航">
+        <a href="#overview">工作台</a><a href="#strategyControl">策略参数</a
+        ><a href="#walletSetup">钱包配置</a><a href="#tradeRecords">成交流</a
+        ><a href="#runtimeLogs">日志</a
+        ><button type="button" id="guideEntry" class="guide-entry">新手指南</button
+        ><a
+          class="register-link"
+          href="https://entropy.io/?r=traderx"
+          target="_blank"
+          rel="noopener noreferrer"
+          >作者注册链接 ↗</a
+        ><span class="referral-benefit"
+          >使用作者链接注册，可获得 75% 邀请返佣（按 Entropy 收取的手续费份额计算）。<small
+            >实际权益以官网账户页为准。</small
+          ></span
+        >
+      </nav>
+      <div class="header-actions">
+        <span class="badge" id="botBadge">机器人已停止</span>
+      </div>
+    </header>
+    <div class="status-strip">
+      <div id="statusLine">正在读取所选账户与市场……</div>
+      <div class="badges">
+        <span class="badge" id="walletBadge">钱包核验中</span
+        ><span class="badge" id="freshBadge">等待刷新</span>
+      </div>
+    </div>
+    <div class="notice preview-notice" id="readOnlyNotice" role="status" hidden>
+      <strong>只读预览</strong>显示本地实际记录；启动、停止和配置保存已禁用。
+    </div>
+    <div class="notice">
+      <strong>实盘操作</strong
+      >启动会发送真实订单；停止先撤销策略挂单。网格平仓单只减少已有库存，配对收益和真实盈亏分开统计。
+    </div>
+    <div id="guideWelcome" class="guide-welcome" role="status" hidden>
+      <span>第一次使用？先了解钱包、预算、启动范围和数据口径。教程不会替你操作交易。</span
+      ><button type="button" id="guideWelcomeOpen" class="guide-button">查看新手指南</button
+      ><button
+        type="button"
+        id="guideWelcomeDismiss"
+        class="guide-close"
+        aria-label="关闭首次使用提示"
+      >
+        ×
+      </button>
+    </div>
+    <main class="workbench grouped-layout">
+      <div class="view-toolbar overview-with-risk" id="overview">
+        <div class="profile-selection">
+          <label for="profile">查看运行</label
+          ><select id="profile" aria-label="选择钱包、市场与策略记录"></select
+          ><span class="muted">仅改变查看范围</span>
+        </div>
+        <section class="panel overview-budget">
+          <div class="panel-head">
+            <strong>风险预算</strong
+            ><span class="muted" id="budgetScope">所选市场 · 全部启用钱包 · 下次启动生效</span>
+          </div>
+          <div class="panel-body">
+            <form id="budgetForm">
+              <div class="budget-fields">
+                <label
+                  >市场<select id="budgetMarket">
+                    <option value="SNDK">SNDK</option>
+                    <option value="ANTH">ANTH</option>
+                  </select></label
+                ><label
+                  >做市单侧总额（USD）<input
+                    id="budgetOrder"
+                    type="number"
+                    min="0"
+                    step="any"
+                    required /></label
+                ><label
+                  >最大仓位（USD）<input
+                    id="budgetPosition"
+                    type="number"
+                    min="0"
+                    step="any"
+                    required /></label
+                ><label
+                  >最大挂单（USD）<input
+                    id="budgetOpenOrders"
+                    type="number"
+                    min="0"
+                    step="any"
+                    required /></label
+                ><label
+                  >会话回撤上限（USD）<input
+                    id="budgetDrawdown"
+                    type="number"
+                    min="0"
+                    step="any"
+                    required /></label
+                ><button class="action" type="submit" id="saveBudgetBtn" disabled>
+                  保存固定预算
+                </button>
+              </div>
+              <div class="budget-config-note" id="budgetConfigNote">正在读取下次启动配置……</div>
+              <div class="budget-status" id="budgetStatus" role="status">等待读取预算</div>
+            </form>
+            <div class="budget-effective">
+              <span id="riskBudgetScope">等待读取</span>
+              <div class="risk" id="riskProfile">
+                <span class="muted">正在读取运行预算……</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="main-grid">
+        <section class="metrics-column" aria-label="账户与历史指标">
+          <div id="cards">
+            <section class="metric-group">
+              <div class="metric-group-head">
+                <strong>账户与市场快照</strong>
+              </div>
+              <div class="empty">正在读取账户……</div>
+            </section>
+          </div>
+          <section class="panel">
+            <div class="panel-head">
+              <strong>持仓与挂单敞口</strong><span class="muted">最坏情况</span>
+            </div>
+            <div class="panel-body" id="exposure">
+              <div class="empty">正在读取敞口……</div>
+            </div>
+          </section>
+        </section>
+        <section class="charts-column" aria-label="图表与成交分布">
+          <section class="panel">
+            <div class="panel-head">
+              <strong
+                ><svg class="section-icon" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M2 2v15h16M4 13l4-5 4 3 5-7" /></svg
+                >会话成交与已实现收益</strong
+              ><span class="muted" id="chartScope">等待读取</span>
+            </div>
+            <div class="chart-summary" id="chartSummary">
+              <div class="chart-stat"><span>成交额</span><b>—</b></div>
+              <div class="chart-stat"><span>已实现减手续费</span><b>—</b></div>
+              <div class="chart-stat"><span>实际手续费</span><b>—</b></div>
+              <div class="chart-stat"><span>成交笔数</span><b>—</b></div>
+            </div>
+            <div class="plot-heading">
+              <strong>累计成交额 · USD</strong><span class="legend-key">成交额</span>
+            </div>
+            <div class="chart-plot" id="volumeChart">
+              <div class="empty">正在读取所选会话成交……</div>
+            </div>
+            <div class="plot-heading">
+              <strong>累计已实现与费用 · USD</strong>
+              <div class="chart-legend">
+                <span class="legend-key net">已实现减手续费</span
+                ><span class="legend-key fee">手续费</span>
+              </div>
+            </div>
+            <div class="chart-plot" id="pnlChart">
+              <div class="empty">等待读取实际成交记录……</div>
+            </div>
+            <div class="chart-note" id="chartNote">
+              仅按所选会话实际成交计算；不代表账户权益曲线。
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <strong>买卖成交分布</strong><span class="muted">所选会话 · 按成交金额</span>
+            </div>
+            <div class="distribution" id="tradeDistribution">
+              <div class="empty">暂无所选会话分布数据</div>
+            </div>
+          </section>
+        </section>
+        <aside class="control-column" aria-label="钱包、策略与风险预算">
+          <section class="panel" id="walletSetup">
+            <div class="panel-head">
+              <strong>钱包与配置</strong><span class="muted">保存在本机</span>
+            </div>
+            <div class="panel-body">
+              <form id="setupForm" autocomplete="off">
+                <div class="setup-fields">
+                  <label
+                    >钱包名称<input
+                      id="setupWalletId"
+                      name="wallet_id"
+                      type="text"
+                      value="primary"
+                      pattern="[A-Za-z0-9_-]+"
+                      required
+                      autocomplete="off"
+                      spellcheck="false"
+                      placeholder="如 wallet1" /></label
+                  ><label
+                    >资金账户地址<input
+                      id="setupAccountAddress"
+                      name="account_address"
+                      type="text"
+                      autocomplete="off"
+                      spellcheck="false"
+                      placeholder="授权该 API 钱包的资金账户" /></label
+                  ><label
+                    >API 钱包私钥<input
+                      id="setupPrivateKey"
+                      name="private_key"
+                      type="password"
+                      autocomplete="new-password"
+                      spellcheck="false"
+                      placeholder="新增时填写；修改已有钱包可留空"
+                  /></label>
+                </div>
+                <div class="actions">
+                  <button type="submit" class="action" id="saveSetupBtn" disabled>
+                    保存本机配置</button
+                  ><span class="setup-status" id="setupStatus" role="status">正在读取配置……</span>
+                </div>
+                <div class="setup-caption">
+                  使用已授权的 API
+                  钱包。钱包名称相同即更新该钱包；已有地址、私钥留空时保留原值。保存不会启动交易，运行时无法修改。<br />私钥保存在
+                  <code>wallet.local.json</code>，请勿上传或分享。策略预算见
+                  <code>dashboard.config.json</code>。
+                </div>
+              </form>
+              <div class="setup-wallet-section">
+                <h3>已配置钱包</h3>
+                <div id="setupWallets" class="muted">等待读取……</div>
+                <div id="setupCredentialNote" class="setup-caption" hidden></div>
+              </div>
+              <div class="setup-referral">
+                此链接不会自动绑定已有钱包；邀请关系与权益以官方页面为准。
+              </div>
+            </div>
+          </section>
+          <section class="panel" id="strategyControl">
+            <div class="panel-head">
+              <strong>策略控制</strong><span class="muted" id="controlMessage">请选择策略</span>
+            </div>
+            <div class="panel-body">
+              <div class="strategies">
+                <button
+                  type="button"
+                  class="strategy selected"
+                  data-strategy="market_maker"
+                  aria-pressed="true"
+                >
+                  <strong>双边做市</strong></button
+                ><button type="button" class="strategy" data-strategy="grid" aria-pressed="false">
+                  <strong>库存网格 · 实验性</strong>
+                </button>
+              </div>
+              <div class="strategy-description">
+                做市：SNDK + ANTH 独立逐仓、双边 Maker 报价。<br />网格：选择方向，按真实库存挂减仓单。实验性功能，尚未经过实盘测试。
+              </div>
+              <div class="grid-form" id="gridForm" hidden>
+                <div class="grid-help">库存网格为实验性功能，尚未经过实盘测试。</div>
+                <div class="grid-fields">
+                  <label>钱包 / 市场<select id="gridTarget"></select></label
+                  ><label
+                    >库存方向<select id="gridDirection">
+                      <option value="long">做多：买入建仓 → 卖出减仓</option>
+                      <option value="short">做空：卖出建仓 → 买入减仓</option>
+                    </select></label
+                  ><label
+                    >网格层数<input
+                      id="gridLevels"
+                      type="number"
+                      min="1"
+                      max="100"
+                      step="1" /></label
+                  ><label
+                    >间距（bps）<input
+                      id="gridSpacing"
+                      type="number"
+                      min="0.1"
+                      max="2000"
+                      step="0.1" /></label
+                  ><label
+                    >每单金额（USD）<input
+                      id="gridNotional"
+                      type="number"
+                      min="10"
+                      max="1800"
+                      step="1" /></label
+                  ><label
+                    >锚点价格<input
+                      id="gridAnchor"
+                      type="number"
+                      min="0"
+                      step="any"
+                      placeholder="留空自动"
+                  /></label>
+                </div>
+                <div class="grid-help" id="gridLedgerStatus" role="status">
+                  正在读取所选钱包与市场的网格账本……
+                </div>
+                <div class="grid-help" id="gridSettingsStatus">
+                  首次接管匹配现有仓位方向；已有网格历史后须空仓并撤清挂单才能变向。100 bps = 1%。
+                </div>
+                <div class="actions">
+                  <button type="button" class="action" id="saveGridBtn">仅保存网格参数</button>
+                </div>
+              </div>
+              <div class="actions">
+                <button type="button" class="action start" id="startBtn" disabled>
+                  启动全部市场做市实盘</button
+                ><button type="button" class="action stop" id="stopBtn" disabled>
+                  全部安全撤单并停止
+                </button>
+              </div>
+              <div class="control-note">做市启动全部已启用市场；网格仅启动所选钱包与市场。</div>
+            </div>
+          </section>
+        </aside>
+        <section class="records-layer" aria-label="账本、订单、成交与日志">
+          <section class="panel" id="gridAccounting" hidden>
+            <div class="panel-head">
+              <strong>库存与双口径盈亏</strong><span class="muted" id="gridAccountingScope"></span>
+            </div>
+            <div class="grid-ledger-cards" id="gridCards"></div>
+            <div class="grid-ledger-note" id="gridAccountingNote"></div>
+          </section>
+          <div class="records-pair">
+            <section class="panel">
+              <div class="panel-head">
+                <strong>当前策略挂单</strong><span class="muted" id="orderCount">等待读取</span>
+              </div>
+              <div class="table-wrap" id="orders">
+                <div class="empty">正在读取挂单……</div>
+              </div>
+            </section>
+            <section class="panel" id="tradeRecords">
+              <div class="panel-head">
+                <strong>交易所最近 24 小时成交</strong
+                ><span class="muted">官方成交 · 所选市场</span>
+              </div>
+              <div class="table-wrap" id="exchangeFills">
+                <div class="empty">正在读取官方成交……</div>
+              </div>
+            </section>
+          </div>
+          <section class="panel">
+            <div class="panel-head">
+              <strong>脚本逐笔成交与磨损</strong><span class="muted">所选运行记录</span>
+            </div>
+            <div class="table-wrap" id="botFills">
+              <div class="empty">正在读取脚本成交……</div>
+            </div>
+          </section>
+          <section class="panel" id="runtimeLogs">
+            <div class="panel-head">
+              <strong>运行日志</strong><span class="muted">按原始记录时间</span>
+            </div>
+            <div class="panel-body">
+              <div class="log" id="log">暂无日志</div>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      <span>Entropy Pilot · 本地做市控制台</span
+      ><span>账户快照与历史统计分开显示 · 投影返佣不代表已到账</span>
+    </footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <dialog id="guideDialog" class="guide-dialog" aria-labelledby="guideTitle">
+      <div class="guide-center-head">
+        <div>
+          <h2 id="guideTitle" tabindex="-1">新手指南</h2>
+          <p>先了解字段和启动范围，再自行决定是否实盘。教程只讲解，不保存配置、不发送订单。</p>
+        </div>
+        <button type="button" id="guideClose" class="guide-close" aria-label="关闭新手指南">
+          ×
+        </button>
+      </div>
+      <div class="guide-center-body" id="guideCenterBody">
+        <div class="guide-start-row">
+          <div>
+            <strong>跟着页面走一遍</strong>
+            <p>9 步认识钱包、预算、策略、数据和停止入口。可随时跳过或关闭。</p>
+          </div>
+          <button type="button" class="guide-button guide-primary" id="guideStartTour">
+            带我走一遍
+          </button>
+        </div>
+        <nav class="guide-topics" aria-label="帮助主题">
+          <button type="button" data-guide-topic="guideGettingStarted">启动流程</button
+          ><button type="button" data-guide-topic="guideBudgetHelp">预算参数</button
+          ><button type="button" data-guide-topic="guideStrategyHelp">做市与网格</button
+          ><button type="button" data-guide-topic="guideDataHelp">怎么看数据</button
+          ><button type="button" data-guide-topic="guideStopHelp">停止与问题</button>
+        </nav>
+        <section class="guide-section" id="guideGettingStarted">
+          <h3>
+            从哪里开始
+            <button type="button" class="guide-locate" data-guide-jump="0">在面板定位 →</button>
+          </h3>
+          <ol>
+            <li>
+              <strong>准备授权。</strong>在交易所为资金账户授权独立的 API
+              钱包。本页填写钱包名称、被授权交易的资金账户地址、API 钱包私钥；不填写主钱包私钥。
+            </li>
+            <li>
+              <strong>保存本机配置。</strong
+              >同名钱包更新，地址或私钥留空保留旧值；换资金账户请用新钱包名称。新保存的钱包使用
+              Windows DPAPI 加密保存到本机 <code>wallet.local.json</code>，仅当前 Windows
+              用户可解密；旧明文文件在重新保存后升级。不要上传或分享。保存不代表交易所授权已经通过，启动时还会核验。
+            </li>
+            <li>
+              <strong>检查参数和状态。</strong
+              >在顶部选市场查看预算。确认当前资金账户、仓位、挂单及策略启动范围。新安装默认停止；已有运行记录可能按原状态恢复，先看机器人状态。
+            </li>
+            <li>
+              <strong>选择策略，再决定启动。</strong
+              >双边做市启动全部启用钱包的全部启用市场；网格仅启动所选钱包与市场。库存网格为实验性功能，尚未经过实盘测试。启动按钮会发送真实订单。
+            </li>
+            <li>
+              <strong>运行后看状态与成交。</strong
+              >启动请求已提交不等于已经成功报价。若账户、授权或参数核验未通过，查看日志提示再处理。
+            </li>
+          </ol>
+          <p class="guide-small-note">
+            想先熟悉运行方式，可用安装目录的
+            <code>run_market_maker.bat</code> 或
+            <code>run_grid.bat</code> 模拟盘入口；模拟成交不能还原真实排队位置。
+          </p>
+        </section>
+        <section class="guide-section" id="guideBudgetHelp">
+          <h3>
+            风险预算怎么填
+            <button type="button" class="guide-locate" data-guide-jump="1">在面板定位 →</button>
+          </h3>
+          <p>
+            先选 SNDK 或
+            ANTH。四项金额<strong>分别作用于该市场的每个启用钱包</strong>，不是多个钱包共享一份总额。这里的市场选择也不是做市启动范围开关。
+          </p>
+          <dl class="guide-terms">
+            <dt>做市单侧总额</dt>
+            <dd>
+              双边做市一侧整条报价梯子的 USD
+              名义金额；多层会拆分这笔总额，不是每层再用一份。网格每单金额另填。
+            </dd>
+            <dt>最大仓位</dt>
+            <dd>该市场的仓位金额限制；也约束网格。它不是保证金金额，也不代表实际已持仓。</dd>
+            <dt>最大挂单</dt>
+            <dd>
+              该市场工作挂单的金额限制；也约束网格。数值须与双侧报价和网格单笔金额兼容，保存时会校验。
+            </dd>
+            <dt>会话回撤上限</dt>
+            <dd>
+              相对本次启动时账户权益的下降停机阈值；也约束网格。它不保证最终亏损不会超过此值。
+            </dd>
+          </dl>
+          <p>
+            点击<strong>保存固定预算</strong>会关闭所选市场按权益自动放大，并把四项作为下次启动配置。运行或恢复中无法保存。没有保存就保留原配置；切换市场或自动刷新不会覆盖尚未保存的输入。
+          </p>
+          <p class="guide-small-note">
+            下面的“当前运行合计／上次运行合计”是只读统计，和输入框中的下次启动配置分开。不同钱包、市场的总敞口需合并考虑。此处不提供通用适合所有账户的金额。
+          </p>
+        </section>
+        <section class="guide-section" id="guideStrategyHelp">
+          <h3>
+            双边做市与库存网格
+            <button type="button" class="guide-locate" data-guide-jump="2">在面板定位 →</button>
+          </h3>
+          <div class="guide-compare">
+            <div>
+              <h4>双边做市</h4>
+              <p>
+                在参考价格两侧挂 Maker
+                限价单，根据持仓调整报价。成交可能积累仓位，不能把“双边”理解为没有方向风险。启动范围是全部启用钱包的全部启用市场。
+              </p>
+            </div>
+            <div>
+              <h4>库存网格（实验性）</h4>
+              <p>
+                实验性功能，尚未经过实盘测试。围绕锚点按价阶挂单。做多为买入建仓、卖出减仓；做空反过来。减仓单仅使用已有库存。仅启动选择的钱包与市场，可能持续积累方向性仓位。
+              </p>
+            </div>
+          </div>
+          <p>
+            库存网格目前仅代码可用，属于实验性功能，尚未经过实盘测试。选择网格后，面板会显示以下字段；教程不会替你切换策略。
+          </p>
+          <dl class="guide-terms">
+            <dt>钱包 / 市场</dt>
+            <dd>明确本次网格操作对象，和“查看运行”的历史记录选择分开。</dd>
+            <dt>库存方向</dt>
+            <dd>首次接管已有仓位须同向。已有网格历史后，变向须空仓、撤清挂单并完成账本确认。</dd>
+            <dt>网格层数</dt>
+            <dd>
+              锚点两侧各自的候选层数，不保证同时出现两倍层数的挂单；库存、风险限制和价格位置会限制实际下单。
+            </dd>
+            <dt>间距（bps）</dt>
+            <dd>相邻价阶的相对距离，100 bps = 1%。价差还需要覆盖实际费用等成本。</dd>
+            <dt>每单金额</dt>
+            <dd>每个网格订单的 USD 名义金额，受最小订单、取整、库存和风险额度约束。</dd>
+            <dt>锚点价格</dt>
+            <dd>
+              留空由策略自动建立初始锚点；满足空仓等条件后才可重新定心，不会始终追着价格移动。
+            </dd>
+          </dl>
+          <p class="guide-small-note">
+            “仅保存网格参数”不启动交易。网格启动按钮会保存当前参数并提交所选钱包、市场的启动请求。
+          </p>
+        </section>
+        <section class="guide-section" id="guideDataHelp">
+          <h3>
+            每块数据怎么看
+            <button type="button" class="guide-locate" data-guide-jump="4">在面板定位 →</button>
+          </h3>
+          <dl class="guide-terms">
+            <dt>查看运行</dt>
+            <dd>
+              选择钱包、市场、模拟／实盘和策略记录，仅改变查看范围。先核对范围、截止时间及历史标签。
+            </dd>
+            <dt>账户与市场快照</dt>
+            <dd>
+              官方账户与行情读取结果，带更新时间。“不可用”或“—”表示未知，不能当作零持仓、零挂单或零费用。
+            </dd>
+            <dt>策略历史统计</dt>
+            <dd>所选运行记录的历史摘要。停止后仍会保留历史盈亏和成交，不代表当前还在交易。</dd>
+            <dt>会话图表</dt>
+            <dd>
+              只使用所选会话保存的成交。累计成交额不是收益；已实现减实际手续费不含浮盈亏、资金费和返佣，也不是账户权益曲线。缺失数据保持未知。
+            </dd>
+            <dt>买卖成交分布</dt>
+            <dd>按已知成交金额计算比例，不是当前多空仓位比例。</dd>
+            <dt>持仓与挂单敞口</dt>
+            <dd>看现有仓位及挂单成交后的方向风险，结合对应风险上限；不要只看成交量。</dd>
+            <dt>挂单、成交、日志</dt>
+            <dd>
+              官方最近 24
+              小时成交与脚本所选会话逐笔成交范围不同。日志保留原始时间；先看具体报错及对应钱包、市场。
+            </dd>
+            <dt>网格账本</dt>
+            <dd>
+              配对价差收益与真实库存盈亏分开。配对收益不等于账户整体盈利，不能再次叠加到真实盈亏中。
+            </dd>
+          </dl>
+          <p class="guide-small-note">
+            30 秒 markout 表示成交后价格变化，不是最终亏损。投影返佣尚未到账，不是已实现现金收入。
+          </p>
+        </section>
+        <section class="guide-section" id="guideStopHelp">
+          <h3>
+            停止与常见问题
+            <button type="button" class="guide-locate" data-guide-jump="8">在面板定位 →</button>
+          </h3>
+          <p>
+            <strong>“全部安全撤单并停止”请求所有策略停止并撤销策略挂单，不等于平掉已有仓位。</strong
+            >等待状态确认，随后在交易所核对仓位和挂单。关闭浏览器标签不等于停止后台服务或机器人。
+          </p>
+          <dl class="guide-faq">
+            <dt>为什么仍显示 stopping？</dt>
+            <dd>
+              可能仍在撤单或核对迟到成交。查看日志和交易所状态，不要通过强杀进程、删除状态文件或重复启动来跳过对账。
+            </dd>
+            <dt>为什么保存或启动按钮不能点？</dt>
+            <dd>
+              查看页面提示：可能是只读预览、正在运行／恢复、钱包尚未配置，或配置读取与参数校验未通过。先处理给出的具体原因。
+            </dd>
+            <dt>为什么有成交，却没有完整净收益？</dt>
+            <dd>
+              成交价格、费用、资金费、未实现与返佣覆盖不同。缺失项不会自动补零；完整净收益需要对应资料齐全。
+            </dd>
+            <dt>遇到 UNKNOWN、授权失败或启动失败怎么办？</dt>
+            <dd>
+              先读错误和该市场日志，核对官方订单、仓位及 API 钱包授权。UNKNOWN
+              表示结果尚不确定，不要删除台账或盲目重发。
+            </dd>
+            <dt>作者链接会自动绑定钱包吗？</dt>
+            <dd>
+              不会。用户自行在官网确认邀请关系。75% 邀请返佣按 Entropy
+              收取的手续费份额计算，不是全部交易手续费的 75%；实际权益以官网账户页为准。
+            </dd>
+          </dl>
+        </section>
+      </div>
+    </dialog>
+    <dialog
+      id="guideTourDialog"
+      class="guide-tour-dialog"
+      aria-labelledby="guideStepTitle"
+      aria-describedby="guideStepCopy"
+    >
+      <div id="guideSpotlight" class="guide-spotlight" aria-hidden="true" hidden></div>
+      <section id="guideTourCard" class="guide-tour-card">
+        <div class="guide-tour-top">
+          <span id="guideStepCount">第 1 / 9 步</span
+          ><button type="button" id="guideTourClose" class="guide-close" aria-label="关闭逐步引导">
+            ×
+          </button>
+        </div>
+        <div
+          id="guideProgress"
+          class="guide-tour-progress"
+          role="progressbar"
+          aria-label="教程进度"
+          aria-valuemin="0"
+          aria-valuemax="9"
+          aria-valuenow="1"
+        >
+          <span id="guideProgressBar"></span>
+        </div>
+        <h2 id="guideStepTitle" tabindex="-1"></h2>
+        <p id="guideStepCopy" class="guide-tour-copy"></p>
+        <p id="guideStepDetail" class="guide-tour-detail"></p>
+        <p id="guideTargetNote" class="guide-tour-target-note" role="status" hidden></p>
+        <div class="guide-tour-actions">
+          <button type="button" id="guideSkip" class="guide-tour-skip">跳过引导</button>
+          <div>
+            <button type="button" id="guidePrevious" class="guide-button">上一步</button
+            ><button type="button" id="guideNext" class="guide-button guide-primary">下一步</button>
+          </div>
+        </div>
+        <div class="guide-tour-keyboard">← / → 切换步骤 · Esc 关闭 · 本引导不执行面板操作</div>
+      </section>
+    </dialog>
 
-/* One control column beside metrics and charts; whole page scrolls. */
-body{height:auto;display:block;overflow:auto}.workbench.grouped-layout{display:block;padding:2px 12px 14px;min-height:0}.grouped-layout>.view-toolbar{padding:8px 12px;margin-bottom:11px}.grouped-layout>.view-toolbar .profile-selection>select{flex:0 1 520px}.main-grid{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(480px,1.9fr) minmax(325px,1fr);gap:12px;align-items:start}.metrics-column,.charts-column,.control-column{min-width:0;height:auto;overflow:visible}.control-column{display:block}.control-column>.panel{margin-bottom:11px}.control-column #walletSetup>.panel-body{display:block;padding:11px 12px}.control-column .setup-fields{display:grid;grid-template-columns:1fr;gap:8px}.control-column .setup-fields label{font-size:10px}.control-column .setup-fields input{min-height:28px;padding:5px 7px}.control-column .actions{margin-top:8px;gap:6px}.control-column .setup-status{flex-basis:100%;line-height:1.6}.control-column .setup-caption{font-size:10px;line-height:1.6;margin-top:7px}.control-column .setup-wallet-section{margin-top:10px;padding-top:8px;border-top:1px solid #e8edf3;border-left:0}.control-column .setup-wallet-section h3{margin-bottom:4px}.control-column .wallet-item{padding:2px 0;line-height:1.6}.control-column .setup-referral{margin-top:8px;padding-top:7px;line-height:1.6}.control-column .setup-referral br{display:block}.control-column .setup-referral a{margin-right:0}.control-column .strategy-description{line-height:1.6;margin:5px 0 8px}.control-column .strategies{margin-bottom:7px}.control-column .strategy{padding:6px}.control-column .action{padding:6px 9px;min-height:30px}.control-column .start,.control-column .stop{flex:1;white-space:normal}.control-column .control-note{line-height:1.6;margin-top:7px}.control-column .risk{display:block}.control-column .risk>div{padding:7px 0;display:flex}.control-column .risk .label{font-size:10px}.control-column .risk b{font-size:13px}.control-column .grid-fields{grid-template-columns:1fr 1fr;gap:7px}.control-column .grid-fields label:first-child,.control-column .grid-fields label:nth-child(2){grid-column:1/-1}.control-column .grid-help{line-height:1.6;margin-top:7px}.metrics-column #cards{display:block}.metrics-column .metric-grid{display:block;padding:0 12px}.metrics-column .card{display:grid;grid-template-columns:minmax(80px,.9fr) minmax(0,1.1fr);padding:8px 0;border-right:0;border-bottom:1px solid #edf0f4;min-height:0;gap:2px 9px}.metrics-column .card:last-child{border-bottom:0}.metrics-column .card .value{font-size:13px;text-align:right;margin:0;line-height:1.5}.metrics-column .card .label{font-size:11px;line-height:1.8}.metrics-column .card .small{font-size:10px;line-height:1.6;margin:0}.metrics-column .history .card:first-child{display:block}.metrics-column .history .card:first-child .value{font-size:12px;text-align:left;margin:3px 0}.metrics-column .metric-group-head{padding:10px 12px}.metrics-column .metric-group-sub{line-height:1.6}.metrics-column #exposure{display:block;padding:12px}.metrics-column .sidebox+.sidebox{margin-top:14px;padding-top:13px;border-top:1px solid #e6ecf2;border-left:0}.charts-column .chart-summary{padding:11px 13px 7px}.charts-column .chart-stat b{font-size:20px}.charts-column .chart-plot,.charts-column .chart-plot svg{height:190px;min-height:190px}.charts-column .chart-note{line-height:1.6;padding:7px 13px 10px}.records-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.records-pair>.panel{min-width:0}.records-layer .grid-ledger-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px}.records-layer .log{max-height:220px}.records-layer .table-wrap{max-height:300px}.records-layer .card .value{font-size:13px}
-@media(min-width:1800px){.main-grid{grid-template-columns:minmax(290px,.8fr) minmax(650px,2.3fr) minmax(370px,1fr)}.metrics-column .card{padding:9px 0}.metrics-column .card .value{font-size:14px}.charts-column .chart-plot,.charts-column .chart-plot svg{height:210px;min-height:210px}}
-@media(max-width:1150px){.main-grid{grid-template-columns:minmax(240px,.8fr) minmax(450px,1.7fr)}.control-column{grid-column:1/-1;grid-row:1;display:block}.control-column>.panel{display:block;width:100%;margin-bottom:11px}.control-column #walletSetup>.panel-body{display:block}.control-column .setup-fields{grid-template-columns:1fr}.control-column .setup-wallet-section{display:block}.control-column .setup-status{flex-basis:auto}.control-column .strategies{max-width:600px}.control-column #strategyControl>.panel-body>.actions{max-width:600px}.control-column .risk{display:block}.control-column .risk>div{display:flex}.records-layer .grid-ledger-cards{grid-template-columns:1fr 1fr}}
-@media(max-width:760px){.workbench.grouped-layout{display:block;padding:2px 9px 10px}.main-grid{display:flex;flex-direction:column;gap:0}.control-column{order:0;width:100%}.metrics-column{order:1;width:100%}.charts-column{order:2;width:100%}.grouped-layout>.view-toolbar .profile-selection>select{flex:1}.control-column .setup-status{flex-basis:100%}.metrics-column .metric-grid{display:block}.metrics-column .card{display:grid;grid-template-columns:1fr 1fr}.metrics-column .card .value{text-align:right}.metrics-column .history .card:first-child .value{text-align:left}.records-pair{display:block}.records-layer .grid-ledger-cards{grid-template-columns:1fr}.charts-column .chart-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.charts-column .chart-stat b{font-size:19px}.charts-column .chart-plot,.charts-column .chart-plot svg{height:170px;min-height:170px}}
-
-/* Risk budget shares the top record selector row. */
-.grouped-layout>.view-toolbar.overview-with-risk{display:grid;grid-template-columns:minmax(300px,1fr) minmax(560px,1.3fr);align-items:center;gap:12px 22px;padding:9px 12px}.profile-selection{display:flex;align-items:center;gap:9px;min-width:0}.profile-selection>label{white-space:nowrap}.profile-selection>select{flex:1;min-width:0;max-width:440px}.profile-selection>.muted{font-size:10px;white-space:nowrap}.overview-budget.panel{margin:0;padding:0;border:0;border-left:1px solid #e1e7ef;border-radius:0;background:transparent;overflow:visible;padding-left:18px;min-width:0}.overview-budget .panel-head{padding:0 0 5px;border-bottom:0;min-height:0;justify-content:flex-start;gap:10px}.overview-budget .panel-head strong{font-size:11px}.overview-budget .panel-head .muted{font-size:10px}.overview-budget .panel-body{padding:0}.overview-budget .risk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.overview-budget .risk>div{display:block;padding:0;border-bottom:0;min-width:0}.overview-budget .risk .label{display:block;font-size:10px;line-height:1.5;white-space:nowrap}.overview-budget .risk b{display:block;font-size:13px;font-weight:600;margin-top:2px;white-space:nowrap}.overview-budget .risk>.muted{grid-column:1/-1;font-size:10px}
-@media(max-width:1050px){.grouped-layout>.view-toolbar.overview-with-risk{grid-template-columns:1fr;gap:10px;padding:9px 12px}.overview-budget.panel{border-left:0;border-top:1px solid #e1e7ef;padding:8px 0 0}.profile-selection>select{max-width:520px}.overview-budget .risk{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}}
-@media(max-width:520px){.profile-selection{flex-wrap:wrap}.profile-selection>.muted{flex-basis:100%}.profile-selection>select{flex:1;max-width:none}.overview-budget .risk{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 14px}.overview-budget .risk .label{white-space:normal}}
-
-
-/* Records follow charts/controls without waiting for the long left metrics. */
-.main-grid{grid-template-rows:min-content minmax(0,1fr);align-content:start}.main-grid>.metrics-column{grid-column:1;grid-row:1/span 2}.main-grid>.charts-column{grid-column:2;grid-row:1}.main-grid>.control-column{grid-column:3;grid-row:1}.main-grid>.records-layer{grid-column:2/4;grid-row:2;min-width:0}.records-layer .panel-head{padding:8px 11px;min-height:34px}.records-layer .empty{padding:19px 10px}.records-layer .table-wrap{max-height:250px}.records-layer .log{max-height:180px}.records-layer .panel-body{padding:10px 11px}.records-layer .records-pair{gap:10px}.referral-benefit{font-size:10px;line-height:1.5;color:#718096;max-width:390px;margin-left:8px}.referral-benefit small{display:block;font-size:10px;color:#94a0af}.nav .register-link{color:#376fa9;font-size:11px;margin-left:5px}.grouped-layout>.view-toolbar.overview-with-risk{grid-template-columns:minmax(275px,.8fr) minmax(700px,2fr);gap:12px 16px;align-items:center}.profile-selection{flex-wrap:wrap;gap:6px 9px}.profile-selection>select{max-width:none}.profile-selection>.muted{flex-basis:100%}.overview-budget .panel-head{gap:9px;flex-wrap:wrap;padding-bottom:6px}.budget-fields{display:grid;grid-template-columns:66px repeat(4,minmax(85px,1fr)) auto;gap:7px;align-items:end}.budget-fields>label{display:flex;flex-direction:column;gap:3px;min-width:0;color:#7a8ba0;font-size:10px;white-space:normal!important}.budget-fields input,.budget-fields select{width:100%;min-width:0;flex:none;height:29px;min-height:29px;padding:5px 7px;font-size:12px}.budget-fields .action{white-space:nowrap;min-height:29px;margin:0;padding:5px 10px}.budget-config-note{color:#8a99ab;font-size:10px;line-height:1.6;margin-top:5px}.budget-status{font-size:10px;line-height:1.5;color:#547596;margin-top:3px;overflow-wrap:anywhere}.budget-effective{display:flex;align-items:baseline;gap:7px 12px;flex-wrap:wrap;border-top:1px solid #edf0f4;margin-top:5px;padding-top:4px;font-size:10px;color:#98a4b3}.budget-effective>#riskBudgetScope{white-space:nowrap}.overview-budget .risk{display:flex;gap:5px 13px;flex-wrap:wrap;font-size:10px;color:#8e9cad}.overview-budget .risk>span{white-space:nowrap}.overview-budget .risk .muted{font-size:10px}
-@media(max-width:1150px){.main-grid{grid-template-rows:auto min-content minmax(0,1fr)}.main-grid>.control-column{grid-column:1/-1;grid-row:1}.main-grid>.metrics-column{grid-column:1;grid-row:2/span 2}.main-grid>.charts-column{grid-column:2;grid-row:2}.main-grid>.records-layer{grid-column:2;grid-row:3}.records-layer .records-pair{display:block}.grouped-layout>.view-toolbar.overview-with-risk{grid-template-columns:1fr}.overview-budget.panel{border-left:0;border-top:1px solid #e1e7ef;padding:8px 0 0}.profile-selection{flex-wrap:nowrap}.profile-selection>.muted{flex-basis:auto}}
-@media(max-width:760px){.referral-benefit{flex-basis:100%;max-width:none;margin:3px 7px 0}.main-grid>.records-layer{order:3;width:100%}.budget-fields{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 10px}.budget-fields>label:first-child{grid-column:1/-1}.budget-fields .action{grid-column:1/-1}.profile-selection{flex-wrap:wrap}.profile-selection>.muted{flex-basis:100%}.budget-effective{display:block}.overview-budget .risk{margin-top:3px}.nav{flex-wrap:wrap}}
-
-
-/* Beginner help is isolated from the dashboard layout and controls. */
-.nav .guide-entry{padding:5px 9px;border:1px solid #cddbec;border-radius:3px;background:#f7faff;color:#336da8;font-size:12px;white-space:nowrap}.nav .guide-entry:hover{background:#edf4fc}.guide-welcome{display:flex;align-items:center;gap:10px;margin:5px 13px 8px;padding:7px 10px;border:1px solid #dce6f1;border-radius:3px;background:#fff;color:#698096;font-size:11px}.guide-welcome>span{flex:1}.guide-welcome button,.guide-dialog button,.guide-tour-dialog button{font:inherit;cursor:pointer}.guide-button{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:5px 10px;border:1px solid #cdd9e7;border-radius:3px;background:#fff;color:#426b96;font-size:11px;line-height:1.6}.guide-button:hover{background:#f1f6fc}.guide-button.guide-primary{background:#3478bd;color:#fff;border-color:#3478bd}.guide-button:disabled{cursor:not-allowed;opacity:.42}.guide-close{border:0;background:transparent;color:#7a8da1;width:30px;height:30px;border-radius:3px;font-size:20px;line-height:1}.guide-close:hover{background:#eef3f8}.guide-dialog{width:min(820px,calc(100vw - 28px));max-width:none;max-height:calc(100dvh - 34px);padding:0;border:1px solid #d6e0eb;border-radius:6px;background:#fff;color:#33465c;box-shadow:0 16px 60px #17375424;overflow:hidden;font-size:12px;line-height:1.75}.guide-dialog::backdrop{background:rgba(35,50,70,.28)}.guide-dialog[open]{display:flex;flex-direction:column;animation:guide-enter .16s ease-out}.guide-center-head{display:flex;align-items:flex-start;gap:14px;justify-content:space-between;padding:17px 20px 12px;border-bottom:1px solid #e5ebf2}.guide-center-head h2{font-size:17px;font-weight:650;margin:0 0 3px}.guide-center-head p{margin:0;color:#8090a3;font-size:11px}.guide-center-body{padding:16px 20px 22px;overflow:auto;overscroll-behavior:contain;scroll-behavior:smooth}.guide-start-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #dfe8f2;border-radius:4px;background:#f8fbff}.guide-start-row strong{font-size:12px}.guide-start-row p{font-size:11px;color:#8191a4;margin:3px 0 0}.guide-topics{display:flex;gap:6px;flex-wrap:wrap;padding:13px 0 2px}.guide-topics button{border:0;background:#f1f5f9;color:#617b96;border-radius:3px;padding:4px 8px;font-size:11px}.guide-section{padding:17px 0 14px;border-bottom:1px solid #e7edf3;scroll-margin-top:12px}.guide-section:last-child{border-bottom:0}.guide-section h3{font-size:14px;font-weight:650;margin:0 0 9px;display:flex;justify-content:space-between;align-items:center;gap:9px}.guide-section p{margin:7px 0;color:#6c7f94}.guide-section ol,.guide-section ul{padding-left:22px;margin:8px 0;color:#647a91}.guide-section li{margin:5px 0}.guide-section strong{color:#3e5873;font-weight:600}.guide-section .guide-locate{font-size:10px;font-weight:400;border:0;background:transparent;color:#3478bd;white-space:nowrap}.guide-terms{margin:0;display:grid;grid-template-columns:125px 1fr;gap:7px 13px}.guide-terms dt{font-weight:600;color:#4e6882}.guide-terms dd{margin:0;color:#718499}.guide-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.guide-compare>div{padding:10px 12px;border:1px solid #e2e9f1;border-radius:4px}.guide-compare h4{margin:0 0 5px;font-size:12px}.guide-compare p{font-size:11px;margin:0}.guide-small-note{font-size:11px;color:#8c9aad!important}.guide-faq{margin:10px 0 0}.guide-faq dt{font-weight:600;margin:12px 0 3px;color:#506a85}.guide-faq dd{margin:0;color:#76899d}.guide-tour-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow:hidden;color:#33465c;overscroll-behavior:contain}.guide-tour-dialog::backdrop{background:transparent}.guide-tour-dialog.guide-missing::backdrop{background:rgba(35,50,70,.28)}.guide-spotlight{position:fixed;border:2px solid #5d91c6;border-radius:5px;box-shadow:0 0 0 9999px rgba(32,49,70,.29);pointer-events:none;transition:border-color .2s;animation:guide-ring 2.2s ease-in-out infinite}.guide-tour-card{position:fixed;width:380px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;padding:15px 16px 13px;border:1px solid #d4dfeb;border-radius:5px;background:#fff;box-shadow:0 8px 32px #20324c24;font:12px/1.75 "Segoe UI","Microsoft YaHei",system-ui,sans-serif}.guide-tour-top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#7f92a7;font-size:11px}.guide-tour-progress{height:3px;overflow:hidden;border-radius:2px;background:#e8eef5;margin:6px 0 13px}.guide-tour-progress>span{height:100%;display:block;background:#699aca;transition:width .2s}.guide-tour-card h2{font-size:16px;line-height:1.5;font-weight:650;margin:0 0 8px;outline:none}.guide-tour-copy{margin:0;color:#667d94;white-space:pre-line}.guide-tour-detail{font-size:11px;color:#8999ab;margin:9px 0 0;white-space:pre-line}.guide-tour-target-note{min-height:30px;font-size:10px;color:#9a854e;margin:8px 0 0}.guide-tour-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:13px;padding-top:11px;border-top:1px solid #e7edf3}.guide-tour-actions>div{display:flex;gap:6px}.guide-tour-skip{border:0;background:transparent;color:#8495a7;padding:5px 0;font-size:11px}.guide-tour-keyboard{font-size:10px;color:#9aa7b6;margin-top:8px}.guide-entry:focus-visible,.guide-welcome button:focus-visible,.guide-dialog button:focus-visible,.guide-tour-dialog button:focus-visible{outline:2px solid #8bb6e2;outline-offset:2px}@keyframes guide-enter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@keyframes guide-ring{50%{border-color:#9bc2e9}}@media(max-width:760px){.guide-welcome{margin:5px 9px 8px;gap:7px;align-items:flex-start}.guide-welcome>span{font-size:10px}.guide-welcome .guide-button{font-size:10px;white-space:nowrap}.guide-dialog{width:calc(100vw - 20px);max-height:calc(100dvh - 20px)}.guide-center-head{padding:13px 14px 10px}.guide-center-body{padding:12px 14px 18px}.guide-start-row{align-items:flex-start}.guide-start-row .guide-button{white-space:nowrap}.guide-terms{grid-template-columns:1fr;gap:3px}.guide-terms dd{margin-bottom:7px}.guide-compare{grid-template-columns:1fr}.guide-tour-card{padding:12px 14px}.guide-tour-keyboard{display:none}.nav .guide-entry{font-size:11px;padding:4px 7px}}@media(prefers-reduced-motion:reduce){.guide-dialog[open],.guide-spotlight{animation:none}.guide-center-body{scroll-behavior:auto}.guide-tour-progress>span,.guide-spotlight{transition:none}}
-</style></head><body data-ui-revision="editable-market-budget-2026-10-17">
-<header class="topbar" id="top"><a href="#overview" class="brand"><em>Entropy Pilot</em>做市控制台</a><nav class="nav" aria-label="工作台导航"><a href="#overview">工作台</a><a href="#strategyControl">策略参数</a><a href="#walletSetup">钱包配置</a><a href="#tradeRecords">成交流</a><a href="#runtimeLogs">日志</a><button type="button" id="guideEntry" class="guide-entry">新手指南</button><a class="register-link" href="https://entropy.io/?r=traderx" target="_blank" rel="noopener noreferrer">作者注册链接 ↗</a><span class="referral-benefit">使用作者链接注册，可获得 75% 邀请返佣（按 Entropy 收取的手续费份额计算）。<small>实际权益以官网账户页为准。</small></span></nav><div class="header-actions"><span class="badge" id="botBadge">机器人已停止</span></div></header>
-<div class="status-strip"><div id="statusLine">正在读取所选账户与市场……</div><div class="badges"><span class="badge" id="walletBadge">钱包核验中</span><span class="badge" id="freshBadge">等待刷新</span></div></div><div class="notice preview-notice" id="readOnlyNotice" role="status" hidden><strong>只读预览</strong>显示本地实际记录；启动、停止和配置保存已禁用。</div><div class="notice"><strong>实盘操作</strong>启动会发送真实订单；停止先撤销策略挂单。网格平仓单只减少已有库存，配对收益和真实盈亏分开统计。</div>
-<div id="guideWelcome" class="guide-welcome" role="status" hidden><span>第一次使用？先了解钱包、预算、启动范围和数据口径。教程不会替你操作交易。</span><button type="button" id="guideWelcomeOpen" class="guide-button">查看新手指南</button><button type="button" id="guideWelcomeDismiss" class="guide-close" aria-label="关闭首次使用提示">×</button></div>
-<main class="workbench grouped-layout">
-<div class="view-toolbar overview-with-risk" id="overview"><div class="profile-selection"><label for="profile">查看运行</label><select id="profile" aria-label="选择钱包、市场与策略记录"></select><span class="muted">仅改变查看范围</span></div><section class="panel overview-budget"><div class="panel-head"><strong>风险预算</strong><span class="muted" id="budgetScope">所选市场 · 全部启用钱包 · 下次启动生效</span></div><div class="panel-body"><form id="budgetForm"><div class="budget-fields"><label>市场<select id="budgetMarket"><option value="SNDK">SNDK</option><option value="ANTH">ANTH</option></select></label><label>做市单侧总额（USD）<input id="budgetOrder" type="number" min="0" step="any" required></label><label>最大仓位（USD）<input id="budgetPosition" type="number" min="0" step="any" required></label><label>最大挂单（USD）<input id="budgetOpenOrders" type="number" min="0" step="any" required></label><label>会话回撤上限（USD）<input id="budgetDrawdown" type="number" min="0" step="any" required></label><button class="action" type="submit" id="saveBudgetBtn" disabled>保存固定预算</button></div><div class="budget-config-note" id="budgetConfigNote">正在读取下次启动配置……</div><div class="budget-status" id="budgetStatus" role="status">等待读取预算</div></form><div class="budget-effective"><span id="riskBudgetScope">等待读取</span><div class="risk" id="riskProfile"><span class="muted">正在读取运行预算……</span></div></div></div></section></div>
-<div class="main-grid">
-<section class="metrics-column" aria-label="账户与历史指标"><div id="cards"><section class="metric-group"><div class="metric-group-head"><strong>账户与市场快照</strong></div><div class="empty">正在读取账户……</div></section></div><section class="panel"><div class="panel-head"><strong>持仓与挂单敞口</strong><span class="muted">最坏情况</span></div><div class="panel-body" id="exposure"><div class="empty">正在读取敞口……</div></div></section></section>
-<section class="charts-column" aria-label="图表与成交分布"><section class="panel"><div class="panel-head"><strong><svg class="section-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2v15h16M4 13l4-5 4 3 5-7"/></svg>会话成交与已实现收益</strong><span class="muted" id="chartScope">等待读取</span></div><div class="chart-summary" id="chartSummary"><div class="chart-stat"><span>成交额</span><b>—</b></div><div class="chart-stat"><span>已实现减手续费</span><b>—</b></div><div class="chart-stat"><span>实际手续费</span><b>—</b></div><div class="chart-stat"><span>成交笔数</span><b>—</b></div></div><div class="plot-heading"><strong>累计成交额 · USD</strong><span class="legend-key">成交额</span></div><div class="chart-plot" id="volumeChart"><div class="empty">正在读取所选会话成交……</div></div><div class="plot-heading"><strong>累计已实现与费用 · USD</strong><div class="chart-legend"><span class="legend-key net">已实现减手续费</span><span class="legend-key fee">手续费</span></div></div><div class="chart-plot" id="pnlChart"><div class="empty">等待读取实际成交记录……</div></div><div class="chart-note" id="chartNote">仅按所选会话实际成交计算；不代表账户权益曲线。</div></section><section class="panel"><div class="panel-head"><strong>买卖成交分布</strong><span class="muted">所选会话 · 按成交金额</span></div><div class="distribution" id="tradeDistribution"><div class="empty">暂无所选会话分布数据</div></div></section></section>
-<aside class="control-column" aria-label="钱包、策略与风险预算">
-<section class="panel" id="walletSetup"><div class="panel-head"><strong>钱包与配置</strong><span class="muted">保存在本机</span></div><div class="panel-body"><form id="setupForm" autocomplete="off"><div class="setup-fields"><label>钱包名称<input id="setupWalletId" name="wallet_id" type="text" value="primary" pattern="[A-Za-z0-9_-]+" required autocomplete="off" spellcheck="false" placeholder="如 wallet1"></label><label>资金账户地址<input id="setupAccountAddress" name="account_address" type="text" autocomplete="off" spellcheck="false" placeholder="授权该 API 钱包的资金账户"></label><label>API 钱包私钥<input id="setupPrivateKey" name="private_key" type="password" autocomplete="new-password" spellcheck="false" placeholder="新增时填写；修改已有钱包可留空"></label></div><div class="actions"><button type="submit" class="action" id="saveSetupBtn" disabled>保存本机配置</button><span class="setup-status" id="setupStatus" role="status">正在读取配置……</span></div><div class="setup-caption">使用已授权的 API 钱包。钱包名称相同即更新该钱包；已有地址、私钥留空时保留原值。保存不会启动交易，运行时无法修改。<br>私钥保存在 <code>wallet.local.json</code>，请勿上传或分享。策略预算见 <code>dashboard.config.json</code>。</div></form><div class="setup-wallet-section"><h3>已配置钱包</h3><div id="setupWallets" class="muted">等待读取……</div><div id="setupCredentialNote" class="setup-caption" hidden></div></div><div class="setup-referral">此链接不会自动绑定已有钱包；邀请关系与权益以官方页面为准。</div></div></section>
-<section class="panel" id="strategyControl"><div class="panel-head"><strong>策略控制</strong><span class="muted" id="controlMessage">请选择策略</span></div><div class="panel-body"><div class="strategies"><button type="button" class="strategy selected" data-strategy="market_maker" aria-pressed="true"><strong>双边做市</strong></button><button type="button" class="strategy" data-strategy="grid" aria-pressed="false"><strong>库存网格 · 实验性</strong></button></div><div class="strategy-description">做市：SNDK + ANTH 独立逐仓、双边 Maker 报价。<br>网格：选择方向，按真实库存挂减仓单。实验性功能，尚未经过实盘测试。</div><div class="grid-form" id="gridForm" hidden><div class="grid-help">库存网格为实验性功能，尚未经过实盘测试。</div><div class="grid-fields"><label>钱包 / 市场<select id="gridTarget"></select></label><label>库存方向<select id="gridDirection"><option value="long">做多：买入建仓 → 卖出减仓</option><option value="short">做空：卖出建仓 → 买入减仓</option></select></label><label>网格层数<input id="gridLevels" type="number" min="1" max="100" step="1"></label><label>间距（bps）<input id="gridSpacing" type="number" min="0.1" max="2000" step="0.1"></label><label>每单金额（USD）<input id="gridNotional" type="number" min="10" max="1800" step="1"></label><label>锚点价格<input id="gridAnchor" type="number" min="0" step="any" placeholder="留空自动"></label></div><div class="grid-help" id="gridLedgerStatus" role="status">正在读取所选钱包与市场的网格账本……</div><div class="grid-help" id="gridSettingsStatus">首次接管匹配现有仓位方向；已有网格历史后须空仓并撤清挂单才能变向。100 bps = 1%。</div><div class="actions"><button type="button" class="action" id="saveGridBtn">仅保存网格参数</button></div></div><div class="actions"><button type="button" class="action start" id="startBtn" disabled>启动全部市场做市实盘</button><button type="button" class="action stop" id="stopBtn" disabled>全部安全撤单并停止</button></div><div class="control-note">做市启动全部已启用市场；网格仅启动所选钱包与市场。</div></div></section>
-
-</aside>
-<section class="records-layer" aria-label="账本、订单、成交与日志">
-<section class="panel" id="gridAccounting" hidden><div class="panel-head"><strong>库存与双口径盈亏</strong><span class="muted" id="gridAccountingScope"></span></div><div class="grid-ledger-cards" id="gridCards"></div><div class="grid-ledger-note" id="gridAccountingNote"></div></section>
-<div class="records-pair"><section class="panel"><div class="panel-head"><strong>当前策略挂单</strong><span class="muted" id="orderCount">等待读取</span></div><div class="table-wrap" id="orders"><div class="empty">正在读取挂单……</div></div></section>
-<section class="panel" id="tradeRecords"><div class="panel-head"><strong>交易所最近 24 小时成交</strong><span class="muted">官方成交 · 所选市场</span></div><div class="table-wrap" id="exchangeFills"><div class="empty">正在读取官方成交……</div></div></section></div>
-<section class="panel"><div class="panel-head"><strong>脚本逐笔成交与磨损</strong><span class="muted">所选运行记录</span></div><div class="table-wrap" id="botFills"><div class="empty">正在读取脚本成交……</div></div></section>
-<section class="panel" id="runtimeLogs"><div class="panel-head"><strong>运行日志</strong><span class="muted">按原始记录时间</span></div><div class="panel-body"><div class="log" id="log">暂无日志</div></div></section>
-</section></div>
-</main><footer class="footer"><span>Entropy Pilot · 本地做市控制台</span><span>账户快照与历史统计分开显示 · 投影返佣不代表已到账</span></footer><div class="toast" id="toast" role="status" aria-live="polite"></div>
-<dialog id="guideDialog" class="guide-dialog" aria-labelledby="guideTitle"><div class="guide-center-head"><div><h2 id="guideTitle" tabindex="-1">新手指南</h2><p>先了解字段和启动范围，再自行决定是否实盘。教程只讲解，不保存配置、不发送订单。</p></div><button type="button" id="guideClose" class="guide-close" aria-label="关闭新手指南">×</button></div><div class="guide-center-body" id="guideCenterBody"><div class="guide-start-row"><div><strong>跟着页面走一遍</strong><p>9 步认识钱包、预算、策略、数据和停止入口。可随时跳过或关闭。</p></div><button type="button" class="guide-button guide-primary" id="guideStartTour">带我走一遍</button></div><nav class="guide-topics" aria-label="帮助主题"><button type="button" data-guide-topic="guideGettingStarted">启动流程</button><button type="button" data-guide-topic="guideBudgetHelp">预算参数</button><button type="button" data-guide-topic="guideStrategyHelp">做市与网格</button><button type="button" data-guide-topic="guideDataHelp">怎么看数据</button><button type="button" data-guide-topic="guideStopHelp">停止与问题</button></nav>
-<section class="guide-section" id="guideGettingStarted"><h3>从哪里开始 <button type="button" class="guide-locate" data-guide-jump="0">在面板定位 →</button></h3><ol><li><strong>准备授权。</strong>在交易所为资金账户授权独立的 API 钱包。本页填写钱包名称、被授权交易的资金账户地址、API 钱包私钥；不填写主钱包私钥。</li><li><strong>保存本机配置。</strong>同名钱包更新，地址或私钥留空保留旧值；换资金账户请用新钱包名称。私钥以明文保存到本机 <code>wallet.local.json</code>，不要上传或分享。保存不代表交易所授权已经通过，启动时还会核验。</li><li><strong>检查参数和状态。</strong>在顶部选市场查看预算。确认当前资金账户、仓位、挂单及策略启动范围。新安装默认停止；已有运行记录可能按原状态恢复，先看机器人状态。</li><li><strong>选择策略，再决定启动。</strong>双边做市启动全部启用钱包的全部启用市场；网格仅启动所选钱包与市场。库存网格为实验性功能，尚未经过实盘测试。启动按钮会发送真实订单。</li><li><strong>运行后看状态与成交。</strong>启动请求已提交不等于已经成功报价。若账户、授权或参数核验未通过，查看日志提示再处理。</li></ol><p class="guide-small-note">想先熟悉运行方式，可用安装目录的 <code>run_market_maker.bat</code> 或 <code>run_grid.bat</code> 模拟盘入口；模拟成交不能还原真实排队位置。</p></section>
-<section class="guide-section" id="guideBudgetHelp"><h3>风险预算怎么填 <button type="button" class="guide-locate" data-guide-jump="1">在面板定位 →</button></h3><p>先选 SNDK 或 ANTH。四项金额<strong>分别作用于该市场的每个启用钱包</strong>，不是多个钱包共享一份总额。这里的市场选择也不是做市启动范围开关。</p><dl class="guide-terms"><dt>做市单侧总额</dt><dd>双边做市一侧整条报价梯子的 USD 名义金额；多层会拆分这笔总额，不是每层再用一份。网格每单金额另填。</dd><dt>最大仓位</dt><dd>该市场的仓位金额限制；也约束网格。它不是保证金金额，也不代表实际已持仓。</dd><dt>最大挂单</dt><dd>该市场工作挂单的金额限制；也约束网格。数值须与双侧报价和网格单笔金额兼容，保存时会校验。</dd><dt>会话回撤上限</dt><dd>相对本次启动时账户权益的下降停机阈值；也约束网格。它不保证最终亏损不会超过此值。</dd></dl><p>点击<strong>保存固定预算</strong>会关闭所选市场按权益自动放大，并把四项作为下次启动配置。运行或恢复中无法保存。没有保存就保留原配置；切换市场或自动刷新不会覆盖尚未保存的输入。</p><p class="guide-small-note">下面的“当前运行合计／上次运行合计”是只读统计，和输入框中的下次启动配置分开。不同钱包、市场的总敞口需合并考虑。此处不提供通用适合所有账户的金额。</p></section>
-<section class="guide-section" id="guideStrategyHelp"><h3>双边做市与库存网格 <button type="button" class="guide-locate" data-guide-jump="2">在面板定位 →</button></h3><div class="guide-compare"><div><h4>双边做市</h4><p>在参考价格两侧挂 Maker 限价单，根据持仓调整报价。成交可能积累仓位，不能把“双边”理解为没有方向风险。启动范围是全部启用钱包的全部启用市场。</p></div><div><h4>库存网格（实验性）</h4><p>实验性功能，尚未经过实盘测试。围绕锚点按价阶挂单。做多为买入建仓、卖出减仓；做空反过来。减仓单仅使用已有库存。仅启动选择的钱包与市场，可能持续积累方向性仓位。</p></div></div><p>库存网格目前仅代码可用，属于实验性功能，尚未经过实盘测试。选择网格后，面板会显示以下字段；教程不会替你切换策略。</p><dl class="guide-terms"><dt>钱包 / 市场</dt><dd>明确本次网格操作对象，和“查看运行”的历史记录选择分开。</dd><dt>库存方向</dt><dd>首次接管已有仓位须同向。已有网格历史后，变向须空仓、撤清挂单并完成账本确认。</dd><dt>网格层数</dt><dd>锚点两侧各自的候选层数，不保证同时出现两倍层数的挂单；库存、风险限制和价格位置会限制实际下单。</dd><dt>间距（bps）</dt><dd>相邻价阶的相对距离，100 bps = 1%。价差还需要覆盖实际费用等成本。</dd><dt>每单金额</dt><dd>每个网格订单的 USD 名义金额，受最小订单、取整、库存和风险额度约束。</dd><dt>锚点价格</dt><dd>留空由策略自动建立初始锚点；满足空仓等条件后才可重新定心，不会始终追着价格移动。</dd></dl><p class="guide-small-note">“仅保存网格参数”不启动交易。网格启动按钮会保存当前参数并提交所选钱包、市场的启动请求。</p></section>
-<section class="guide-section" id="guideDataHelp"><h3>每块数据怎么看 <button type="button" class="guide-locate" data-guide-jump="4">在面板定位 →</button></h3><dl class="guide-terms"><dt>查看运行</dt><dd>选择钱包、市场、模拟／实盘和策略记录，仅改变查看范围。先核对范围、截止时间及历史标签。</dd><dt>账户与市场快照</dt><dd>官方账户与行情读取结果，带更新时间。“不可用”或“—”表示未知，不能当作零持仓、零挂单或零费用。</dd><dt>策略历史统计</dt><dd>所选运行记录的历史摘要。停止后仍会保留历史盈亏和成交，不代表当前还在交易。</dd><dt>会话图表</dt><dd>只使用所选会话保存的成交。累计成交额不是收益；已实现减实际手续费不含浮盈亏、资金费和返佣，也不是账户权益曲线。缺失数据保持未知。</dd><dt>买卖成交分布</dt><dd>按已知成交金额计算比例，不是当前多空仓位比例。</dd><dt>持仓与挂单敞口</dt><dd>看现有仓位及挂单成交后的方向风险，结合对应风险上限；不要只看成交量。</dd><dt>挂单、成交、日志</dt><dd>官方最近 24 小时成交与脚本所选会话逐笔成交范围不同。日志保留原始时间；先看具体报错及对应钱包、市场。</dd><dt>网格账本</dt><dd>配对价差收益与真实库存盈亏分开。配对收益不等于账户整体盈利，不能再次叠加到真实盈亏中。</dd></dl><p class="guide-small-note">30 秒 markout 表示成交后价格变化，不是最终亏损。投影返佣尚未到账，不是已实现现金收入。</p></section>
-<section class="guide-section" id="guideStopHelp"><h3>停止与常见问题 <button type="button" class="guide-locate" data-guide-jump="8">在面板定位 →</button></h3><p><strong>“全部安全撤单并停止”请求所有策略停止并撤销策略挂单，不等于平掉已有仓位。</strong>等待状态确认，随后在交易所核对仓位和挂单。关闭浏览器标签不等于停止后台服务或机器人。</p><dl class="guide-faq"><dt>为什么仍显示 stopping？</dt><dd>可能仍在撤单或核对迟到成交。查看日志和交易所状态，不要通过强杀进程、删除状态文件或重复启动来跳过对账。</dd><dt>为什么保存或启动按钮不能点？</dt><dd>查看页面提示：可能是只读预览、正在运行／恢复、钱包尚未配置，或配置读取与参数校验未通过。先处理给出的具体原因。</dd><dt>为什么有成交，却没有完整净收益？</dt><dd>成交价格、费用、资金费、未实现与返佣覆盖不同。缺失项不会自动补零；完整净收益需要对应资料齐全。</dd><dt>遇到 UNKNOWN、授权失败或启动失败怎么办？</dt><dd>先读错误和该市场日志，核对官方订单、仓位及 API 钱包授权。UNKNOWN 表示结果尚不确定，不要删除台账或盲目重发。</dd><dt>作者链接会自动绑定钱包吗？</dt><dd>不会。用户自行在官网确认邀请关系。75% 邀请返佣按 Entropy 收取的手续费份额计算，不是全部交易手续费的 75%；实际权益以官网账户页为准。</dd></dl></section></div></dialog>
-<dialog id="guideTourDialog" class="guide-tour-dialog" aria-labelledby="guideStepTitle" aria-describedby="guideStepCopy"><div id="guideSpotlight" class="guide-spotlight" aria-hidden="true" hidden></div><section id="guideTourCard" class="guide-tour-card"><div class="guide-tour-top"><span id="guideStepCount">第 1 / 9 步</span><button type="button" id="guideTourClose" class="guide-close" aria-label="关闭逐步引导">×</button></div><div id="guideProgress" class="guide-tour-progress" role="progressbar" aria-label="教程进度" aria-valuemin="0" aria-valuemax="9" aria-valuenow="1"><span id="guideProgressBar"></span></div><h2 id="guideStepTitle" tabindex="-1"></h2><p id="guideStepCopy" class="guide-tour-copy"></p><p id="guideStepDetail" class="guide-tour-detail"></p><p id="guideTargetNote" class="guide-tour-target-note" role="status" hidden></p><div class="guide-tour-actions"><button type="button" id="guideSkip" class="guide-tour-skip">跳过引导</button><div><button type="button" id="guidePrevious" class="guide-button">上一步</button><button type="button" id="guideNext" class="guide-button guide-primary">下一步</button></div></div><div class="guide-tour-keyboard">← / → 切换步骤 · Esc 关闭 · 本引导不执行面板操作</div></section></dialog>
-<script>
-const CONTROL_TOKEN='__CONTROL_TOKEN__';
-const $=s=>document.querySelector(s);let selectedProfile='',selectedStrategy='market_maker',busy=false,gridDirty=false,gridLoadedTarget='',lastController={},lastSnapshot={},refreshSequence=0,gridDirtyFields=new Set(),setupLoaded=false,setupLoading=false,setupBusy=false,lastCharts=null,budgetSnapshot={},budgetLoaded=false,budgetLoading=false,budgetBusy=false,budgetLastFetched=0,budgetDrafts={},budgetDirtyMarkets=new Set();
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const num=(v,d=2)=>v==null||v===''||!Number.isFinite(Number(v))?'—':Number(v).toLocaleString('zh-CN',{minimumFractionDigits:d,maximumFractionDigits:d});
-const money=(v,d=4)=>v==null||v===''?'—':`${Number(v)<0?'−':''}$${num(Math.abs(Number(v)),d)}`;
-const cls=(v,invert=false)=>{if(v==null||Number(v)===0)return '';return (invert?Number(v)<0:Number(v)>0)?'green':'red'};
-const time=v=>v?new Date(Number(v)).toLocaleString():'—';
-function card(label,value,sub='',klass=''){return `<div class="card"><div class="label">${esc(label)}</div><div class="value ${klass}">${value}</div><div class="small">${sub}</div></div>`}
-function metricSection(title,scope,content,history=false){return `<section class="metric-group${history?' history':''}"><div class="metric-group-head"><div class="metric-group-title"><span class="scope-dot"></span>${esc(title)}</div><span class="metric-group-sub">${esc(scope)}</span></div><div class="metric-grid">${content}</div></section>`}
-function showToast(message,bad=false){const t=$('#toast');t.textContent=message;t.className='toast'+(bad?' bad':'');t.style.display='block';setTimeout(()=>t.style.display='none',5000)}
-
-function gridTarget(){return (lastController.markets||{})[$('#gridTarget').value]||null}
-function updateControlButtons(){const c=lastController,target=gridTarget(),grid=selectedStrategy==='grid',readOnly=!!lastSnapshot.read_only;$('#readOnlyNotice').hidden=!readOnly;$('#gridForm').hidden=!grid;$('#startBtn').disabled=readOnly||busy||budgetBusy||(grid?(!target||target.running):!!c.running);$('#startBtn').textContent=grid?'保存并启动此市场网格实盘':'启动全部市场做市实盘';$('#stopBtn').disabled=readOnly||busy||!c.running;$('#saveGridBtn').disabled=readOnly||busy||!target||target.running;document.querySelectorAll('#gridForm input,#gridDirection').forEach(x=>x.disabled=readOnly||busy||!!target?.running);document.querySelectorAll('.strategy').forEach(x=>{x.disabled=busy;x.classList.toggle('selected',x.dataset.strategy===selectedStrategy);x.setAttribute?.('aria-pressed',String(x.dataset.strategy===selectedStrategy))});updateSetupControls();updateBudgetControls()}
-function renderControl(c){lastController=c;const running=!!c.running,all=c.all_running!==false,wallets=Number(c.wallet_count||1),scope=wallets>1?`${wallets}钱包并行`:'双市场';$('#botBadge').textContent=running?`${all?scope+'运行中':'部分进程运行'} · ${c.strategy==='grid'?'网格':c.strategy==='market_maker'?'做市':'多策略'}`:'机器人已停止';$('#botBadge').className='badge '+(running&&all?'ok':running?'warn':'');$('#controlMessage').textContent=c.message||'等待启动';const selector=$('#gridTarget'),keys=Object.keys(c.markets||{}),old=selector.value;if([...selector.options].map(x=>x.value).join('|')!==keys.join('|')){selector.innerHTML=keys.map(k=>{const m=c.markets[k];return `<option value="${esc(k)}">${esc(m.wallet_id||'primary')} / ${esc(m.symbol||k)}</option>`}).join('');if(keys.includes(old))selector.value=old}const target=gridTarget();if(target&&(!gridDirty||gridLoadedTarget!==selector.value)){const g=target.grid_settings||{},values={gridDirection:g.inventory_direction||'long',gridLevels:g.levels_each_side??'',gridSpacing:g.spacing_bps??'',gridNotional:g.order_notional_usd??'',gridAnchor:g.anchor_price??''};for(const [id,value] of Object.entries(values))if(!gridDirty||!gridDirtyFields.has(id))$('#'+id).value=value;gridLoadedTarget=selector.value;$('#gridSettingsStatus').textContent=gridDirty?'参数已修改，尚未保存。':target.running?'此市场正在运行，停止后可修改参数。':'已显示保存参数。首次接管可匹配现有仓位方向；已有网格变向须先空仓撤单。每单金额仍受风险限制。'}updateControlButtons();const r=c.risk_profile||{};$('#riskBudgetScope').textContent=c.risk_profile_source==='planned'?'计划合计（只读）':running?'当前运行合计（只读）':'上次运行合计（只读）';if(Object.keys(r).length)$('#riskProfile').innerHTML=`<span>订单 ${money(r.order_notional_usd,2)}</span><span>仓位 ${money(r.max_position_usd,2)}</span><span>挂单 ${money(r.max_open_order_usd,2)}</span><span>回撤 ${money(r.max_drawdown_usd,2)}</span>`;const profileChanged=syncGridProfile();updateGridLedgerStatus();return profileChanged}
-function renderGridAccounting(s){const target=gridTarget(),gridMode=selectedStrategy==='grid',matching=!gridMode||(summaryMatchesTarget(s)&&(s?.dashboard_profile?.strategy||s?.strategy)==='grid'),g=matching&&s?.grid_accounting;$('#gridAccounting').hidden=!gridMode&&!g;if(!g){$('#gridAccountingScope').textContent=target?`${target.wallet_id||'primary'} / ${target.symbol}`:'';$('#gridCards').innerHTML='';$('#gridAccountingNote').textContent=gridMode?`暂无 ${target?.wallet_id||'所选钱包'} / ${target?.symbol||'所选市场'} 的网格账本。完成该市场的真实库存初始化后显示；不会用其他市场或做市数据替代。`:'';return;}const state={ready:'已对账',unknown:'需要对账',reconciliation_required:'需要对账',error:'账本异常',uninitialized:'等待初始化'};$('#gridAccountingScope').textContent=`${s.coin||''} · ${g.direction==='short'?'空头库存':'多头库存'} · ${state[g.status]||g.status||'未知'} · ${time(g.inception_time_ms)} 起 · ${summaryIsCurrent(s)?'当前账本':'历史账本'}截止 ${time(s.updated_at_ms)}`;$('#gridCards').innerHTML=[
-card('真实库存数量',num(g.inventory_qty,8),'有符号数量：多仓为正、空仓为负'),
-card('真实持仓均价',num(g.average_entry_price,6),`持仓成本名义额 ${money(g.inventory_cost_usd)}`),
-card('网格配对净收益（账面）',money(g.grid_pair_net_usd),'配对价差 − 两腿已知手续费；不代表整体盈利',cls(g.grid_pair_net_usd)),
-card('真实已实现净盈亏',money(g.realized_net_usd),'按全库存均价结算 − 已知手续费 + 已入账资金费',cls(g.realized_net_usd)),
-card('已实现盈亏（未含资金费）',money(g.realized_after_trade_fees_usd),'仅交易已实现盈亏 − 已知手续费',cls(g.realized_after_trade_fees_usd)),
-card('库存浮动盈亏',money(g.unrealized_usd),'剩余库存按最新标记价计价',cls(g.unrealized_usd)),
-card('真实总净盈亏',money(g.total_net_usd),'真实已实现净盈亏 + 库存浮动盈亏',cls(g.total_net_usd)),
-card('计入累计盈亏后的回本价',num(g.break_even_price,6),'多头获利使回本价下降；空头获利使回本价上升'),
-card('等效剩余回本成本',money(g.net_invested_usd),'含累计真实收支；不是保证金或可提现金额'),
-card('实际已知费用 / 资金费',`${money(g.fees_paid_usd)} / ${money(g.funding_net_usd)}`,g.funding_complete?`资金费已核对至 ${time(g.funding_coverage_until_ms)}`:'资金费覆盖尚未完整，完整净盈亏与回本价不显示'),
-card('配对数量 / 未配对库存',`${num(g.matched_qty,6)} / ${num(g.unmatched_qty,6)}`,`${num(g.fill_count,0)} 笔已入账成交 · ${num(g.funding_event_count,0)} 笔资金费`)
-].join('');$('#gridAccountingNote').textContent=(g.reason?g.reason+'。':'')+'配对盈利可能与真实已实现亏损同时出现：低价新增库存完成一轮价差，减仓仍按整体库存成本结算。配对收益不重复加入真实总盈亏。已知实际收益可改善剩余库存回本价，但可提现金额仍由交易所保证金规则决定。统计自账本建立起，接管旧持仓前的历史费用不包含；预测返佣不计入真实收益。'}
-
-function summaryController(s){return Object.values(lastController.markets||{}).find(m=>(m.wallet_id||'primary')===(s?.wallet_id||'primary')&&m.symbol===String(s?.coin||'').split(':').pop())||null}
-function summaryIsCurrent(s){const bot=summaryController(s),strategy=s?.dashboard_profile?.strategy||s?.strategy;return !!(bot?.running&&bot.strategy===strategy&&bot.run_id&&s?.session_id===bot.run_id&&['running','paused'].includes(s?.status))}
-function summaryMatchesTarget(s){const target=gridTarget();return !!(s&&target&&(s.wallet_id||'primary')===(target.wallet_id||'primary')&&String(s.coin||'').split(':').pop()===target.symbol)}
-function syncGridProfile(){if(selectedStrategy!=='grid')return false;const target=gridTarget();if(!target)return false;const matches=(lastSnapshot.profiles||[]).filter(p=>p.mode==='live'&&(p.wallet_id||'primary')===(target.wallet_id||'primary')&&String(p.coin||'').split(':').pop()===target.symbol),profile=matches.find(p=>p.strategy==='grid')||matches[0];if(!profile||profile.id===selectedProfile)return false;selectedProfile=profile.id;$('#profile').value=profile.id;return true}
-function gridProfilesForTarget(){const target=gridTarget();return target?(lastSnapshot.profiles||[]).filter(p=>p.mode==='live'&&p.strategy==='grid'&&(p.wallet_id||'primary')===(target.wallet_id||'primary')&&String(p.coin||'').split(':').pop()===target.symbol):[]}
-function updateGridLedgerStatus(){const target=gridTarget();if(!target){$('#gridLedgerStatus').textContent='正在读取钱包和市场；尚未取得对应网格账本。';return}const label=`${target.wallet_id||'primary'} / ${target.symbol}`,s=lastSnapshot.summary,matching=summaryMatchesTarget(s)&&(s?.dashboard_profile?.strategy||s?.strategy)==='grid'&&s?.grid_accounting;$('#gridLedgerStatus').textContent=matching?`${label} 网格账本已读取，统计截止 ${time(s.updated_at_ms)}。`:gridProfilesForTarget().length?`正在读取 ${label} 的网格账本；不会显示其他市场数据。`:`暂无 ${label} 的网格账本。完成该市场真实库存初始化后显示。`}
-function showGridSelectionView(){updateGridLedgerStatus();renderGridAccounting(lastSnapshot.summary);if(selectedStrategy!=='grid'||summaryMatchesTarget(lastSnapshot.summary))return;const target=gridTarget(),label=target?`${target.wallet_id||'primary'} / ${target.symbol}`:'所选钱包 / 市场';renderLive(null,null);renderCharts(null);$('#statusLine').textContent=`正在读取 ${label} 的账户与统计……`;$('#orderCount').textContent='—';for(const id of ['orders','exchangeFills','botFills'])$('#'+id).innerHTML='<div class="empty">正在读取所选市场数据……</div>';$('#log').textContent='正在读取所选市场日志……'}
-function knownSessionNetFees(sum){if(sum.fee_accounting_complete===false||sum.fees_paid==null)return null;const paid=Number(sum.fees_paid),rebate=Number(sum.projected_self_rebate||0)+Number(sum.projected_referred_benefit||0);return Number.isFinite(paid)&&Number.isFinite(rebate)?paid-rebate:null}
-function renderLive(l,s){
- const sum=s||{},current=summaryIsCurrent(s),paused=current&&(sum.status==='paused'||l?.bot_status==='paused'),history=!!s&&!current,prof=sum.dashboard_profile||{},asOf=time(sum.updated_at_ms),sessionScope=s?`${time(sum.session_started_at_ms)} — ${asOf}`:'暂无策略统计',runLabel=current?(paused?'当前会话暂停挂单':'当前会话运行中'):'上次运行（历史摘要）',coinLabel=`${sum.coin||''} · ${prof.strategy==='grid'?'网格':'做市'}`,agg=sum.dashboard_aggregates||{},reb=(sum.projected_self_rebate||0)+(sum.projected_referred_benefit||0),elapsed=Math.max(0,(Number(sum.updated_at_ms||0)-Number(sum.session_started_at_ms||0))/1000),daily=elapsed>0?Number(sum.volume_usd||0)/elapsed*86400:null;
- let liveCards=metricSection('账户与市场快照','尚未读取','<div class="empty" style="grid-column:1/-1">账户数据暂不可用，请查看顶部状态。</div>');
- if(!l||!l.ok){$('#walletBadge').textContent='账户数据不可用';$('#walletBadge').className='badge warn';$('#statusLine').textContent=l?.error||'所选市场账户数据尚未读取';$('#freshBadge').textContent='等待账户快照';$('#freshBadge').className='badge warn';$('#exposure').innerHTML='<div class="empty">账户数据不可用</div>'}
- else{
-  const m=l.market||{},p=l.position||{},localTs=Number(l.local_telemetry_updated_at_ms||0),officialTs=Number(l.updated_at_ms||0),accountTime=localTs||officialTs,source=localTs?'脚本账户快照':'官方账户快照',netPos=Number((l.exposure||{}).net_position_usd||0),liqDist=(p.liquidation_px!=null&&m.mark_px)?Math.abs(Number(m.mark_px)-Number(p.liquidation_px))/Number(m.mark_px)*100:null;
-  $('#walletBadge').textContent=paused?'策略暂停挂单':`账户已读取 · ${l.account_abstraction||'—'}`;$('#walletBadge').className='badge '+(paused?'warn':'ok');$('#freshBadge').textContent=`${source} ${time(accountTime)}`;$('#freshBadge').className='badge '+(l.telemetry_stale?'warn':'ok');$('#statusLine').textContent=`${l.coin||''} · bid/ask ${num(m.best_bid,4)} / ${num(m.best_ask,4)} · ${source} ${time(accountTime)}${history?' · 下方策略统计为历史摘要':''}`;
-  liveCards=metricSection('账户与市场快照',`${l.coin||''} · ${source} · ${time(accountTime)}`,[
-   card('账户权益',money(l.monitored_equity_usd),`${esc(l.collateral_source||source)}`,'blue'),
-   card('真实净仓位',money(netPos),`${num(p.qty,4)} @ ${num(p.entry_px,2)}`,cls(netPos)),
-   card('可用保证金',money(l.free_collateral_usd),`可买 ${money(l.available_to_buy_usd,0)} · 可卖 ${money(l.available_to_sell_usd,0)}`),
-   card('当前持仓浮盈亏',money(p.unrealized_pnl_usd),'当前仓位按标记价计算',cls(p.unrealized_pnl_usd)),
-   card('强平距离',liqDist==null?'无可用强平价':`${num(liqDist,1)}%`,p.liquidation_px==null?'以交易所实际仓位为准':`强平价 ${num(p.liquidation_px,2)}`,'amber'),
-   card('杠杆',p.leverage?.value?`${num(p.leverage.value,0)}×`:'—',p.leverage?`${esc(p.leverage.type||'')} · 保证金 ${money(p.margin_used_usd)}`:'当前无仓位'),
-   card('标记 / Oracle',num(m.mark_px,2),`Oracle ${num(m.oracle_px,2)} · 资金费率 ${m.funding==null?'—':num(Number(m.funding)*100,4)+'%'}`),
-   card('盘口价差',m.spread_bps==null?'—':`${num(m.spread_bps,2)} bps`,`bid ${num(m.best_bid,2)} / ask ${num(m.best_ask,2)}`),
-   card('市场 24h 总成交',money(m.day_notional_volume,0),'全市场口径，非本账户','purple')
-  ].join(''));renderExposure(l.exposure||{});
- }
- if(!s){$('#cards').innerHTML=liveCards+metricSection('策略统计','暂无所选记录','<div class="empty" style="grid-column:1/-1">暂无该钱包与市场的策略摘要。</div>',true);return}
- const rp=sum.risk_profile||{},am=sum.adaptive_spread_metrics||{},ab=sum.action_budget||{},sessionPnl=sum.account_session_net_pnl_usd,netFee=knownSessionNetFees(sum),quoteState=!current?(summaryController(s)?.running?'当前进程与此历史摘要不同':'已停止（下方历史统计）'):paused?'暂停挂单':am.crisis_mode_active?'危机报价中':am.volatility_guard_active?'波动守卫中':'正常报价',wearBps=agg.markout_30_projected_execution_wear_bps;
- $('#cards').innerHTML=liveCards+metricSection(current?'当前策略统计':'历史策略统计',`${coinLabel} · ${runLabel} · 截止 ${asOf}`,[
-  card('报价状态',quoteState,current?`当前会话统计截止 ${asOf}`:`以下数据仅属于 ${sessionScope}，不代表当前交易`,current&&!paused?'green':'amber'),
-  card(current?'本次运行盈亏':'上次运行盈亏',money(sessionPnl),`统计期间 ${sessionScope} · 会话停机线 −${money(rp.max_drawdown_usd,0)}`,cls(sessionPnl)),
-  card(current?'本金累计盈亏':'上次摘要本金累计盈亏',money(sum.principal_net_pnl_usd),`截止 ${asOf} · 摘要权益 ${money(sum.equity_actual)} − 本金 ${money(sum.configured_capital_usd,0)}`,cls(sum.principal_net_pnl_usd)),
-  card('会话成交额',money(sum.volume_usd),`${sum.fill_count??'—'} 笔 · ${sessionScope}`,'purple'),
-  card(current?'24h 量投影（运行市场合计）':'上次会话成交量日化（历史外推）',money(current?agg.portfolio_projected_24h_volume_usd:daily,0),current?`本标的 ${money(daily,0)} · 按已运行时长线性外推`:`仅用历史 ${num(elapsed/60,0)} 分钟外推，当前未运行`,'purple'),
-  card('会话磨损率',wearBps==null?'—':`${num(wearBps,2)} bps`,`30 秒口径 ${agg.markout_30_samples||0} 样本 · 截止 ${asOf}`,cls(agg.markout_30_projected_execution_wear_usd,true)),
-  card('会话磨损金额',money(sum.actual_wear_usd),`摘要已实现 ${money(sum.realized_pnl)} / 摘要未实现 ${money(sum.unrealized_pnl)} · 截止 ${asOf}`,cls(sum.actual_wear_usd,true)),
-  card('会话净手续费（含投影返佣）',money(netFee),netFee==null?`费用尚未完整核验，净手续费未知 · 截止 ${asOf}`:`手续费 ${money(sum.fees_paid)} − 投影返佣 ${money(reb)} · 截止 ${asOf}`,cls(-netFee)),
-  card('会话动作效率',ab.volume_per_action_usd==null?'—':`${money(ab.volume_per_action_usd,2)}/动作`,`${num(ab.session_spent,0)} 动作 · ${sessionScope}`,Number(ab.self_funding_ratio||0)>=1?'green':'amber')
- ].join(''),!current);
-}
-
-function renderExposure(e){const s=lastSnapshot.summary,limit=Number(s?.risk_profile?.max_position_usd),valid=Number.isFinite(limit)&&limit>0,scope=valid?`${summaryIsCurrent(s)?'当前配置':'所选历史记录配置'}上限 ${money(limit,0)}`:'暂无所选市场仓位上限';function side(isLong){const worst=isLong?e.worst_case_long_usd:e.worst_case_short_usd,current=isLong?e.current_long_usd:e.current_short_usd,pending=isLong?e.pending_buy_usd:e.pending_sell_usd,pct=valid&&worst!=null?Number(worst)/limit*100:null;return `<div class="sidebox ${isLong?'long':'short'}"><div class="sidehead"><span class="${isLong?'green':'red'}">${isLong?'多头':'空头'}最坏敞口</span><b>${money(worst,2)}${pct==null?'':` · ${num(pct,1)}%`}</b></div><div class="meter"><span style="width:${pct==null?0:Math.max(0,Math.min(100,pct))}%"></span></div><div class="sidegrid"><div><span>当前持仓</span><b>${money(current,2)}</b></div><div><span>${isLong?'买单':'卖单'}待成交</span><b>${money(pending,2)}</b></div><div><span>配置上限</span><b>${valid?money(limit,0):'—'}</b></div></div></div>`}$('#exposure').innerHTML=side(true)+side(false)+`<div class="risk-scope">${esc(scope)}；按同向挂单全部成交计算。${valid?'':'无上限时不绘制风险比例。'}</div>`}
-
-
-function renderOrders(rows){$('#orderCount').textContent=`${rows.length} 笔`;if(!rows.length){$('#orders').innerHTML='<div class="empty">当前没有挂单</div>';return}let h='<table><thead><tr><th>挂单时间</th><th>订单 ID</th><th>方向</th><th>价格</th><th>剩余数量</th><th>已成交</th><th>剩余金额</th><th>TIF</th><th>Reduce only</th></tr></thead><tbody>';for(const r of rows)h+=`<tr><td>${time(r.timestamp_ms)}</td><td>${esc(r.oid)}<br><span class="muted">${esc(r.cloid||'')}</span></td><td class="${r.is_buy?'green':'red'}">${esc(r.side)}</td><td>${num(r.price,6)}</td><td>${num(r.remaining_qty,8)}</td><td>${num(r.filled_qty,8)}</td><td>${money(r.notional_usd)}</td><td><span class="pill">${esc(r.tif||r.order_type||'')}</span></td><td>${r.reduce_only?'是':'否'}</td></tr>`;$('#orders').innerHTML=h+'</tbody></table>'}
-
-function renderExchangeFills(rows){if(!rows.length){$('#exchangeFills').innerHTML='<div class="empty">最近 24 小时没有该标的成交</div>';return}let h='<table><thead><tr><th>时间</th><th>订单 ID</th><th>方向</th><th>开平</th><th>价格</th><th>数量</th><th>成交额</th><th>流动性</th><th>手续费</th><th>Closed PnL</th></tr></thead><tbody>';for(const r of rows)h+=`<tr><td>${time(r.time_ms)}</td><td>${esc(r.oid)}</td><td class="${r.is_buy?'green':'red'}">${esc(r.side)}</td><td>${esc(r.direction||'')}</td><td>${num(r.price,6)}</td><td>${num(r.qty,8)}</td><td>${money(r.notional_usd)}</td><td><span class="pill">${esc(r.liquidity)}</span></td><td>${money(r.fee_usd)}</td><td class="${cls(r.closed_pnl_usd)}">${money(r.closed_pnl_usd)}</td></tr>`;$('#exchangeFills').innerHTML=h+'</tbody></table>'}
-
-function mark(row,h){const x=row.markouts&&row.markouts[String(h)];return x?x.markout_bps:null}function renderBotFills(rows){if(!rows.length){$('#botFills').innerHTML='<div class="empty">当前脚本会话还没有成交</div>';return}let h='<table><thead><tr><th>时间</th><th>策略订单</th><th>方向</th><th>成交额</th><th>价格</th><th>数量</th><th>流动性</th><th>实际费</th><th>投影返佣</th><th>Closed PnL</th><th>1s</th><th>5s</th><th>30s</th><th>逐笔磨损</th></tr></thead><tbody>';for(const r of rows){const mo=x=>{const v=mark(r,x);return `<span class="${cls(v)}">${v==null?'—':num(v,3)+' bps'}</span>`};h+=`<tr><td>${time(r.time_ms)}</td><td>${esc(r.order_role||'')}<br><span class="muted">${esc(r.oid||'')}</span></td><td class="${r.is_buy?'green':'red'}">${r.is_buy?'BUY':'SELL'}</td><td>${money(r.notional_usd)}</td><td>${num(r.price,6)}</td><td>${num(r.qty,8)}</td><td><span class="pill">${esc(r.liquidity||'')}</span></td><td>${money(r.fee_usd)}</td><td>${money(r.projected_rebate_total_usd)}</td><td class="${cls(r.realized_pnl_delta)}">${money(r.realized_pnl_delta)}</td><td>${mo(1)}</td><td>${mo(5)}</td><td>${mo(30)}</td><td class="${cls(r.latest_execution_wear_usd,true)}">${money(r.latest_execution_wear_usd)}</td></tr>`}$('#botFills').innerHTML=h+'</tbody></table>'}
-
-
-function chartNumber(value){return value==null||value===''||!Number.isFinite(Number(value))?null:Number(value)}
-function chartMoney(value){if(!Number.isFinite(value))return '—';const sign=value<0?'−':'';const n=Math.abs(value);return sign+'$'+(n>=1e6?num(n/1e6,2)+'M':n>=1e3?num(n/1e3,n>=1e4?0:1)+'k':num(n,n>=10?0:2))}
-function drawSessionChart(id,rows,fields){const el=$('#'+id),width=Math.max(290,(el.clientWidth||760)-22),height=190,left=58,right=15,top=12,bottom=29,w=width-left-right,h=height-top-bottom,points=rows.map(r=>({...r,time_ms:chartNumber(r.time_ms)})).filter(r=>r.time_ms!=null).sort((a,b)=>a.time_ms-b.time_ms),values=points.flatMap(r=>fields.map(f=>chartNumber(r[f.key]))).filter(x=>x!=null);if(!points.length||!values.length){el.innerHTML='<div class="empty">所选会话没有可绘制的已知数据</div>';return}const first=points[0].time_ms,last=points[points.length-1].time_ms,span=Math.max(last-first,1);let lo=Math.min(0,...values),hi=Math.max(0,...values);if(hi===lo){hi=lo+1;lo=Math.min(0,lo)}const pad=(hi-lo)*.07;hi+=pad;if(lo<0)lo-=pad;const x=t=>left+(t-first)/span*w,y=v=>top+(hi-v)/(hi-lo)*h;let svg=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${id==='volumeChart'?'所选会话累计成交额':'所选会话已实现减手续费及累计手续费'}">`;for(let i=0;i<4;i++){const v=lo+(hi-lo)*i/3,yy=y(v);svg+=`<line x1="${left}" y1="${yy}" x2="${width-right}" y2="${yy}" stroke="#e8edf3" stroke-width="1"/><text x="${left-8}" y="${yy+3}" text-anchor="end" font-size="9" fill="#92a1b4">${esc(chartMoney(v))}</text>`}if(lo<0&&hi>0)svg+=`<line x1="${left}" y1="${y(0)}" x2="${width-right}" y2="${y(0)}" stroke="#b6c6d8" stroke-dasharray="3 3"/>`;for(let i=0;i<4;i++){const t=first+(last-first)*i/3,xx=x(t);svg+=`<line x1="${xx}" y1="${top}" x2="${xx}" y2="${height-bottom}" stroke="#f0f3f7"/><text x="${xx}" y="${height-8}" text-anchor="${i===0?'start':i===3?'end':'middle'}" font-size="9" fill="#92a1b4">${new Date(t).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</text>`}for(const f of fields){let segments=[],segment=[];for(const r of points){const v=chartNumber(r[f.key]);if(v==null){if(segment.length)segments.push(segment);segment=[]}else segment.push([x(r.time_ms),y(v),r.time_ms,v])}if(segment.length)segments.push(segment);for(const seg of segments){const d=seg.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');if(f.area&&seg.length>1)svg+=`<path d="${d} L${seg[seg.length-1][0]},${height-bottom} L${seg[0][0]},${height-bottom} Z" fill="#dceafb" opacity=".58"/>`;svg+=`<path d="${d}" fill="none" stroke="${f.color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>`;const last=seg[seg.length-1];svg+=`<circle cx="${last[0]}" cy="${last[1]}" r="2.6" fill="${f.color}"><title>${esc(f.label+' · '+time(last[2])+' · '+money(last[3],4))}</title></circle>`}}el.innerHTML=svg+'</svg>'}
-function renderCharts(data){lastCharts=data;const scope=data?.scope||{},rows=Array.isArray(data?.series)?data.series:[],last=rows[rows.length-1]||{},volume=chartNumber(last.cumulative_volume_usd),net=chartNumber(last.cumulative_realized_less_fees_usd),fee=chartNumber(last.cumulative_fee_usd);$('#chartScope').textContent=data?`${scope.coin||''} · ${scope.mode==='paper'?'模拟':'实盘'} · ${scope.fill_count??'—'} 笔`:'暂无所选会话数据';$('#chartSummary').innerHTML=[['成交额',money(volume,2),'blue'],['已实现减手续费',money(net,4),cls(net)],['实际手续费',money(fee,4),''],['成交笔数',num(scope.fill_count,0),'']].map(([label,value,color])=>`<div class="chart-stat"><span>${esc(label)}</span><b class="${color}">${value}</b></div>`).join('');drawSessionChart('volumeChart',rows,[{key:'cumulative_volume_usd',label:'累计成交额',color:'#4b88c8',area:true}]);drawSessionChart('pnlChart',rows,[{key:'cumulative_realized_less_fees_usd',label:'已实现减手续费',color:'#c06f77'},{key:'cumulative_fee_usd',label:'累计手续费',color:'#b89a69'}]);const sides=data?.sides,buy=chartNumber(sides?.buy?.volume_usd),sell=chartNumber(sides?.sell?.volume_usd),total=buy!=null&&sell!=null?buy+sell:null;if(total!=null&&total>0){const buyPct=buy/total*100;$('#tradeDistribution').innerHTML=`<div class="distribution-head"><span class="green">买入 <b>${money(buy,2)}</b> <small>${num(sides.buy.count,0)} 笔</small></span><span class="red">卖出 <b>${money(sell,2)}</b> <small>${num(sides.sell.count,0)} 笔</small></span></div><div class="buy-sell-track"><span class="buy" style="width:${buyPct}%"></span><span class="sell" style="width:${100-buyPct}%"></span></div><div class="distribution-foot"><span>买入 ${num(buyPct,1)}%</span><span>卖出 ${num(100-buyPct,1)}%</span></div>`}else $('#tradeDistribution').innerHTML='<div class="empty">所选会话暂无已知买卖成交金额</div>';if(Number(sides?.unknown?.count)>0)$('#tradeDistribution').innerHTML+=`<div class="risk-scope">另有 ${num(sides.unknown.count,0)} 笔方向未知，未归入买卖比例。</div>`;$('#chartNote').textContent=(data&&scope.from_ms?`${time(scope.from_ms)} — ${time(scope.to_ms)}。`:'')+(data?.note||'仅统计已保存成交的价格已实现盈亏与实际手续费；不含未实现、资金费和返佣，不代表账户权益曲线。')+(scope.complete===false?' 数据不完整，缺失部分保持未知。':'')}
-if(typeof window!=='undefined')window.addEventListener('resize',()=>{if(lastCharts)renderCharts(lastCharts)});
-
-function syncProfiles(d){const sel=$('#profile'),ids=(d.profiles||[]).map(x=>x.id);if(sel.options.length!==ids.length||[...sel.options].some((o,i)=>o.value!==ids[i]))sel.innerHTML=(d.profiles||[]).map(x=>{const mode=x.mode==='live'?'实盘':'模拟',strategy=x.strategy==='grid'?'网格':'双边做市',wallet=x.wallet_id&&x.wallet_id!=='primary'?` · ${esc(x.wallet_id)}`:'';return `<option value="${esc(x.id)}">${esc(x.coin||'未知标的')}${wallet} · ${mode} · ${strategy} · ${esc(x.status||'')}</option>`}).join('');selectedProfile=d.selected||'';sel.value=selectedProfile}
-function render(d){lastSnapshot=d;syncProfiles(d);const changed=renderControl(d.controller||{})||syncGridProfile(),matching=selectedStrategy!=='grid'||summaryMatchesTarget(d.summary);renderLive(matching?d.live:null,matching?d.summary:null);renderGridAccounting(d.summary);renderCharts(matching?d.charts:null);if(matching&&d.live?.ok){renderOrders(d.live.open_orders||[]);renderExchangeFills(d.live.recent_fills||[])}else{$('#orderCount').textContent='—';$('#orders').innerHTML='<div class="empty">账户数据不可用，暂无法确认挂单</div>';$('#exchangeFills').innerHTML='<div class="empty">账户数据不可用，暂无法确认最近 24 小时成交</div>'}renderBotFills(matching?(d.fills||[]):[]);const lines=matching?(d.bot_log||[]).join('\n'):'',note=summaryIsCurrent(d.summary)?'':'[所选策略当前未运行；以下为历史日志，逐行时间以原记录为准]\n';$('#log').textContent=lines?note+lines:'暂无该市场日志';if(!matching)showGridSelectionView();if(changed)void refresh()}
-async function refresh(){const sequence=++refreshSequence;try{const u='/api/snapshot'+(selectedProfile?'?profile='+encodeURIComponent(selectedProfile):'');const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error(await r.text());const data=await r.json();if(sequence===refreshSequence){render(data);if(!setupLoaded&&!setupLoading)void loadSetup();if(!budgetLoading&&!budgetBusy&&(!budgetLoaded||Date.now()-budgetLastFetched>15000))void loadBudget()}}catch(e){if(sequence===refreshSequence){$('#statusLine').textContent='面板读取失败：'+e.message;$('#freshBadge').className='badge bad'}}}
-async function postControl(path,body={}){if(lastSnapshot.read_only)throw new Error('只读预览不允许修改配置或控制交易');const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-Entropy-Control':CONTROL_TOKEN},body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());return await r.json()}
-async function control(path,body={}){busy=true;updateControlButtons();try{await postControl(path,body);showToast(path.endsWith('start')?'机器人启动请求已提交':'已请求安全撤单停止')}catch(e){showToast(e.message,true)}finally{busy=false;await refresh()}}
-function gridPayload(){const target=gridTarget();if(!target)throw new Error('请先选择钱包和市场');const inputs=['#gridLevels','#gridSpacing','#gridNotional','#gridAnchor'];for(const id of inputs)if(!$(id).reportValidity())throw new Error('请检查网格参数');return {wallet_id:target.wallet_id,symbol:target.symbol,grid:{inventory_direction:$('#gridDirection').value,levels_each_side:Number($('#gridLevels').value),spacing_bps:Number($('#gridSpacing').value),order_notional_usd:Number($('#gridNotional').value),anchor_price:$('#gridAnchor').value===''?null:Number($('#gridAnchor').value)}}}
-async function saveGrid(start=false){busy=true;updateControlButtons();try{const body=gridPayload();await postControl('/api/control/grid/settings',body);gridDirty=false;gridDirtyFields.clear();if(start)await postControl('/api/control/market/start',{wallet_id:body.wallet_id,symbol:body.symbol,strategy:'grid'});showToast(start?'已保存参数并提交该市场网格启动请求':'该市场网格参数已保存；未启动交易')}catch(e){showToast(e.message,true)}finally{busy=false;await refresh()}}
-
-
-const budgetInputs={order_notional_usd:'budgetOrder',max_position_usd:'budgetPosition',max_open_order_usd:'budgetOpenOrders',max_drawdown_usd:'budgetDrawdown'};
-function budgetSymbol(){return $('#budgetMarket').value||'SNDK'}
-function currentBudget(){return budgetSnapshot.markets?.[budgetSymbol()]||null}
-function budgetReason(){const config=currentBudget();return lastSnapshot.read_only||budgetSnapshot.read_only?'只读模式，不能保存预算。':lastController.running||budgetSnapshot.running?'机器人运行中，停止后可保存固定预算。':config?.editable===false?(config.reason||'所选市场当前不可修改。'):''}
-function updateBudgetControls(){const config=currentBudget(),blocked=!!budgetReason(),disabled=busy||budgetBusy||!budgetLoaded||!config||blocked;$('#saveBudgetBtn').disabled=disabled;$('#budgetMarket').disabled=budgetBusy;for(const id of Object.values(budgetInputs))$('#'+id).disabled=disabled;const reason=budgetReason();if(reason)$('#budgetStatus').textContent=reason}
-function captureBudgetDraft(){const symbol=budgetSymbol();budgetDrafts[symbol]=Object.fromEntries(Object.entries(budgetInputs).map(([key,id])=>[key,$('#'+id).value]));budgetDirtyMarkets.add(symbol);$('#budgetStatus').textContent='已修改，尚未保存；刷新不会覆盖输入。'}
-function renderBudget(data){budgetSnapshot=data||{};const symbol=budgetSymbol(),config=currentBudget();$('#budgetScope').textContent=`${symbol} · 全部启用钱包分别使用该预算 · 下次启动生效`;if(!config){$('#budgetConfigNote').textContent='所选市场尚无可读取的配置。';updateBudgetControls();return}const values=budgetDirtyMarkets.has(symbol)?budgetDrafts[symbol]:config.values||{};for(const [key,id] of Object.entries(budgetInputs))$('#'+id).value=values?.[key]??'';const automatic=!!config.auto_scale_with_equity;$('#budgetConfigNote').textContent=(automatic?'当前按权益自动缩放；输入为配置原值。保存将关闭所选市场自动缩放。':'当前为固定预算；保存只修改下次启动配置，不会启动交易。')+' 单侧总额仅用于做市；仓位、挂单及回撤上限也约束该市场网格。';$('#budgetStatus').textContent=budgetDirtyMarkets.has(symbol)?'已修改，尚未保存；刷新不会覆盖输入。':'已读取下次启动配置。';updateBudgetControls()}
-async function budgetApi(method,body){if(method==='POST'&&lastSnapshot.read_only)throw new Error('只读模式，不能保存预算。');const response=await fetch('/api/budget',{method,cache:'no-store',headers:{'Content-Type':'application/json','X-Entropy-Control':CONTROL_TOKEN},...(body?{body:JSON.stringify(body)}:{})}),raw=await response.text();let data;try{data=JSON.parse(raw)}catch{}if(!response.ok)throw new Error(data?.error||raw||`预算请求失败（${response.status}）`);if(!data||data.ok===false)throw new Error(data?.error||'预算响应不完整');return data}
-async function loadBudget(){if(budgetLoading)return;budgetLoading=true;try{const data=await budgetApi('GET');budgetLoaded=true;budgetLastFetched=Date.now();renderBudget(data)}catch(e){budgetLastFetched=Date.now();$('#budgetStatus').textContent='预算读取失败：'+e.message;updateBudgetControls()}finally{budgetLoading=false}}
-async function saveBudget(event){event.preventDefault();if(busy||budgetBusy||!budgetLoaded||!currentBudget()||budgetReason())return;for(const id of Object.values(budgetInputs))if(!$('#'+id).reportValidity())return;const symbol=budgetSymbol(),values=Object.fromEntries(Object.entries(budgetInputs).map(([key,id])=>[key,Number($('#'+id).value)]));budgetBusy=true;updateControlButtons();$('#budgetStatus').textContent='正在保存固定预算……';try{const data=await budgetApi('POST',{symbol,values,fixed_budget:true});budgetDirtyMarkets.delete(symbol);delete budgetDrafts[symbol];if(data.markets){budgetLoaded=true;budgetLastFetched=Date.now();renderBudget(data)}else await loadBudget();$('#budgetStatus').textContent=`${symbol} 固定预算已保存，下次启动生效；未启动交易。`;showToast(`${symbol} 固定预算已保存；未启动交易`);await refresh()}catch(e){$('#budgetStatus').textContent='预算保存失败：'+e.message;showToast('预算保存失败：'+e.message,true)}finally{budgetBusy=false;updateControlButtons()}}
-$('#budgetForm').addEventListener('submit',saveBudget);$('#budgetMarket').addEventListener('change',()=>renderBudget(budgetSnapshot));for(const id of Object.values(budgetInputs))$('#'+id).addEventListener('input',captureBudgetDraft);
-
-function updateSetupControls(){const disabled=!!lastSnapshot.read_only||!!lastController.running||setupBusy;$('#saveSetupBtn').disabled=disabled||!setupLoaded;document.querySelectorAll('#setupForm input').forEach(x=>x.disabled=disabled);if(lastSnapshot.read_only)$('#setupStatus').textContent='只读预览：配置保存已禁用。';else if(lastController.running)$('#setupStatus').textContent='机器人运行中，停止后可修改钱包配置。'}
-function renderSetup(data){const wallets=data.wallets||[];$('#setupCredentialNote').textContent=data.credential_note||'';$('#setupCredentialNote').hidden=!data.credential_note;$('#setupWallets').innerHTML=wallets.length?wallets.map(w=>`<div class="wallet-item"><strong>${esc(w.id)}</strong> <span>· ${w.enabled?'已启用':'未启用'} · ${w.has_private_key?'已保存私钥':'未填写私钥'}</span><br><span>${esc(w.account_address_masked||'地址由私钥推导')}</span></div>`).join(''):'<span class="muted">尚未配置钱包</span>';$('#setupStatus').textContent=wallets.length?'已读取本机配置；可新增或更新同名钱包。':'填写钱包信息后保存；保存不会启动交易。';updateSetupControls()}
-async function loadSetup(){if(setupLoading)return;setupLoading=true;try{const response=await fetch('/api/setup',{headers:{'X-Entropy-Control':CONTROL_TOKEN},cache:'no-store'});if(!response.ok)throw new Error('配置读取失败（'+response.status+'）');const data=await response.json();setupLoaded=true;renderSetup(data)}catch(e){$('#setupStatus').textContent=e.message;$('#setupWallets').textContent='本机配置暂不可用';updateSetupControls()}finally{setupLoading=false}}
-async function saveSetup(event){event.preventDefault();if(lastSnapshot.read_only||lastController.running||setupBusy||!setupLoaded)return;for(const id of ['#setupWalletId','#setupAccountAddress','#setupPrivateKey'])if(!$(id).reportValidity())return;setupBusy=true;updateSetupControls();$('#setupStatus').textContent='正在保存本机钱包配置……';try{await postControl('/api/setup',{wallet_id:$('#setupWalletId').value.trim(),account_address:$('#setupAccountAddress').value.trim(),private_key:$('#setupPrivateKey').value.trim()});$('#setupPrivateKey').value='';$('#setupAccountAddress').value='';await loadSetup();$('#setupStatus').textContent='已保存本机配置，未启动交易。';showToast('钱包配置已保存；未启动交易');await refresh()}catch(e){const message='配置保存失败：'+(e.message||'请检查输入与本机配置');$('#setupStatus').textContent=message;showToast(message,true)}finally{setupBusy=false;updateSetupControls()}}
-$('#setupForm').addEventListener('submit',saveSetup);
-
-document.querySelectorAll('.strategy').forEach(btn=>btn.addEventListener('click',()=>{selectedStrategy=btn.dataset.strategy;updateControlButtons();syncGridProfile();showGridSelectionView();void refresh()}));
-document.querySelectorAll('#gridForm input,#gridDirection').forEach(input=>input.addEventListener('input',()=>{gridDirty=true;gridDirtyFields.add(input.id);$('#gridSettingsStatus').textContent='参数已修改，尚未保存。'}));
-$('#gridTarget').addEventListener('change',()=>{gridDirty=false;gridDirtyFields.clear();renderControl(lastController);syncGridProfile();showGridSelectionView();void refresh()});$('#saveGridBtn').addEventListener('click',()=>saveGrid(false));
-$('#startBtn').addEventListener('click',()=>selectedStrategy==='grid'?saveGrid(true):control('/api/control/start',{strategy:selectedStrategy}));$('#stopBtn').addEventListener('click',()=>control('/api/control/stop'));$('#profile').addEventListener('change',e=>{selectedProfile=e.target.value;refresh()});refresh();setInterval(refresh,2000);
-</script>
-<script>
-(()=>{
-'use strict';
-const get=id=>document.getElementById(id),center=get('guideDialog'),tour=get('guideTourDialog'),card=get('guideTourCard'),spot=get('guideSpotlight'),welcome=get('guideWelcome'),entry=get('guideEntry');
-if(!center||!tour||!entry)return;
-const storageKey='entropy.beginner-guide.v1',motion=window.matchMedia('(prefers-reduced-motion: reduce)');
-const steps=[
- {target:'#walletSetup',title:'1. 先准备钱包与授权',copy:'填写钱包名称、资金账户地址和已授权的 API 钱包私钥。资金账户是实际持仓与交易的账户，私钥来自独立的 API 钱包。',detail:'保存仅写入本机明文 wallet.local.json；不完成交易所授权，也不会启动交易。不要填写或分享主钱包私钥。教程不会读取或填写输入框。'},
- {target:'.overview-budget',title:'2. 核对下次启动预算',copy:'先选市场，再设置做市单侧总额、最大仓位、最大挂单和会话回撤。四项对该市场的每个启用钱包分别生效，不是共享一份总额。',detail:'“保存固定预算”会关闭该市场按权益放大，下次启动生效。单侧总额是做市整条单侧梯子的金额；另外三项也限制网格。下方运行合计是另一种只读口径。'},
- {target:'#strategyControl',title:'3. 理解两种策略',copy:'双边做市在参考价格两侧报价；库存网格围绕锚点分层建仓与减仓。库存网格为实验性功能，尚未经过实盘测试。两种策略都可能积累仓位。',detail:'做市启动全部启用钱包的全部启用市场；网格只启动选定钱包与市场。网格方向、层数、间距、每单金额和锚点的解释都在新手指南中；教程不会替你切换策略。'},
- {target:'#startBtn',title:'4. 启动按钮会发送真实订单',copy:'先核对资金账户、市场、当前仓位、挂单和参数，再自行决定是否启动。做市的启动范围不由“查看运行”或顶部预算市场选择决定。',detail:'启动请求提交后，还要看账户授权、参数核验和报价状态。本步骤只高亮按钮，不能点穿，也不会提交启动请求。'},
- {target:'.profile-selection',title:'5. 选择要查看的运行记录',copy:'这里切换钱包、市场、模拟／实盘与策略记录，只改变查看范围，不切换后台交易范围。',detail:'核对所选记录、时间与状态。历史会话即使已停止，仍会显示当时的成交与盈亏。'},
- {target:'#cards',title:'6. 分清当前账户与历史统计',copy:'账户快照反映最近一次官方读取；策略历史统计描述所选运行记录。先看各自的更新时间与“历史”标签。',detail:'“—”或“数据不可用”表示尚不能确认，不等于零。持仓与挂单敞口用于观察方向风险，不能用历史盈亏替代当前账户核对。'},
- {target:'.charts-column',title:'7. 图表不是账户权益曲线',copy:'图表按所选会话保存的成交绘制。累计成交额不是收益；已实现减手续费只扣实际费用，不包含浮盈亏、资金费和返佣。',detail:'买卖分布按成交金额计算，不是当前仓位比例。缺失数据保持未知；投影返佣不代表到账。'},
- {target:'.records-layer',title:'8. 用明细核对实际行为',copy:'这里查看策略挂单、交易所最近 24 小时成交、脚本会话逐笔成交与运行日志。它们的时间范围和来源不同，数字不必相同。',detail:'遇到错误先看具体钱包、市场和原始时间。UNKNOWN 需要继续核对，不能当成失败后直接重发；网格配对收益也不能再次加进真实盈亏。'},
- {target:'#stopBtn',title:'9. 停止后仍要核对仓位',copy:'“全部安全撤单并停止”会请求所有策略停止和撤单。它不等于立即撤完，也不等于把已有仓位平掉。',detail:'等待停止与撤单结果，再到交易所核对仓位和挂单。关闭浏览器不会停止后台机器人。完成后遮罩会移除，原有输入和配置保持不变。'}
-];
-let current=0,active=false,returnFocus=null,frame=0,resizeObserver=null,mutationObserver=null,observed=null;
-const remember=status=>{try{window.localStorage.setItem(storageKey,status)}catch{}};
-const dismissWelcome=()=>{welcome.hidden=true;remember('dismissed')};
-try{welcome.hidden=['dismissed','completed'].includes(window.localStorage.getItem(storageKey))}catch{welcome.hidden=false}
-function captureFocus(){if(!center.open&&!tour.open)returnFocus=document.activeElement}
-function restoreFocus(){const target=returnFocus&&returnFocus.isConnected&&!returnFocus.disabled&&returnFocus.getClientRects().length&&typeof returnFocus.focus==='function'?returnFocus:entry;target.focus({preventScroll:true});returnFocus=null}
-function finish(completed=false){active=false;if(frame){cancelAnimationFrame(frame);frame=0}resizeObserver?.disconnect();mutationObserver?.disconnect();observed=null;spot.hidden=true;tour.classList.remove('guide-missing');if(tour.open)tour.close();if(center.open)center.close();if(completed)remember('completed');restoreFocus()}
-function openCenter(){captureFocus();if(tour.open){active=false;resizeObserver?.disconnect();mutationObserver?.disconnect();spot.hidden=true;tour.close()}dismissWelcome();if(!center.open)center.showModal();get('guideTitle').focus({preventScroll:true})}
-function focusTrap(event,dialog){if(event.key!=='Tab')return;const nodes=[...dialog.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')].filter(node=>node.getClientRects().length&&!node.hidden);if(!nodes.length){event.preventDefault();return}const first=nodes[0],last=nodes[nodes.length-1],focused=document.activeElement;if(event.shiftKey&&(focused===first||!nodes.includes(focused))){event.preventDefault();last.focus()}else if(!event.shiftKey&&(focused===last||!nodes.includes(focused))){event.preventDefault();first.focus()}}
-function queuePosition(){if(active&&!frame)frame=requestAnimationFrame(()=>{frame=0;positionStep()})}
-const clamp=(n,lo,hi)=>Math.max(lo,Math.min(n,Math.max(lo,hi)));
-function positionStep(){
- if(!active||!tour.open)return;
- const target=document.querySelector(steps[current].target),vw=document.documentElement.clientWidth||window.innerWidth,vh=window.innerHeight,margin=12,gap=14;
- card.style.width=Math.min(380,vw-24)+'px';card.style.maxHeight=(vh-24)+'px';
- const note=get('guideTargetNote');note.hidden=false;note.textContent='';const cw=card.offsetWidth,ch=card.offsetHeight;
- if(!target||!target.isConnected||!target.getClientRects().length){spot.hidden=true;tour.classList.add('guide-missing');card.style.left=clamp((vw-cw)/2,margin,vw-cw-margin)+'px';card.style.top=clamp((vh-ch)/2,margin,vh-ch-margin)+'px';note.hidden=false;note.textContent='当前区域暂不可见，可继续下一步；教程不会改变策略。';return}
- tour.classList.remove('guide-missing');
- if(observed!==target){resizeObserver?.disconnect();resizeObserver?.observe(target);observed=target}
- const r=target.getBoundingClientRect();let left,top,vertical=false;
- if(vw>760&&r.right+gap+cw<=vw-margin){left=r.right+gap;top=clamp(r.top,margin,vh-ch-margin)}
- else if(vw>760&&r.left-gap-cw>=margin){left=r.left-gap-cw;top=clamp(r.top,margin,vh-ch-margin)}
- else{vertical=true;left=clamp((vw-cw)/2,margin,vw-cw-margin);top=Math.max(margin,vh-ch-margin)}
- card.style.left=left+'px';card.style.top=top+'px';
- const x=Math.max(margin,r.left-4),y=Math.max(margin,r.top-4),right=Math.min(vw-margin,r.right+4),bottom=Math.min(vertical?top-gap:vh-margin,r.bottom+4);
- if(right<=x||bottom<=y){spot.hidden=true;tour.classList.add('guide-missing');note.hidden=false;note.textContent='正在定位此区域；也可继续阅读下一步。';return}
- spot.hidden=false;Object.assign(spot.style,{left:x+'px',top:y+'px',width:(right-x)+'px',height:(bottom-y)+'px'});
- const clipped=r.height>bottom-y+10;note.textContent=clipped?'此区域较长，仅高亮可见部分；关闭后可完整查看。':'';
-}
-function showStep(index){
- current=clamp(index,0,steps.length-1);const step=steps[current];
- get('guideStepCount').textContent=`第 ${current+1} / ${steps.length} 步`;get('guideProgress').setAttribute('aria-valuenow',String(current+1));get('guideProgressBar').style.width=((current+1)/steps.length*100)+'%';get('guideStepTitle').textContent=step.title;get('guideStepCopy').textContent=step.copy;get('guideStepDetail').textContent=step.detail;get('guidePrevious').disabled=current===0;get('guideNext').textContent=current===steps.length-1?'完成引导':'下一步';
- const target=document.querySelector(step.target);positionStep();
- if(target&&target.getClientRects().length){const rect=target.getBoundingClientRect();window.scrollTo({top:Math.max(0,window.scrollY+rect.top-20),behavior:motion.matches?'instant':'smooth'})}
- get('guideStepTitle').focus({preventScroll:true});if(!motion.matches&&typeof card.animate==='function')card.animate([{opacity:.5,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],{duration:170,easing:'ease-out'});queuePosition();
-}
-function startTour(index=0){captureFocus();dismissWelcome();if(center.open)center.close();if(!tour.open)tour.showModal();active=true;if(typeof ResizeObserver==='function')resizeObserver??=new ResizeObserver(queuePosition);if(typeof MutationObserver==='function'){mutationObserver??=new MutationObserver(queuePosition);mutationObserver.observe(document.querySelector('main'),{childList:true,subtree:true})}showStep(index)}
-entry.addEventListener('click',openCenter);get('guideWelcomeOpen').addEventListener('click',openCenter);get('guideWelcomeDismiss').addEventListener('click',dismissWelcome);get('guideClose').addEventListener('click',()=>finish());get('guideStartTour').addEventListener('click',()=>startTour());get('guideTourClose').addEventListener('click',()=>finish());get('guideSkip').addEventListener('click',()=>finish());get('guidePrevious').addEventListener('click',()=>showStep(current-1));get('guideNext').addEventListener('click',()=>current===steps.length-1?finish(true):showStep(current+1));
-center.querySelectorAll('[data-guide-topic]').forEach(button=>button.addEventListener('click',()=>get(button.dataset.guideTopic)?.scrollIntoView({block:'start',behavior:motion.matches?'instant':'smooth'})));center.querySelectorAll('[data-guide-jump]').forEach(button=>button.addEventListener('click',()=>startTour(Number(button.dataset.guideJump))));
-for(const dialog of [center,tour]){dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});dialog.addEventListener('keydown',event=>{focusTrap(event,dialog);if(dialog===tour&&(event.key==='ArrowRight'||event.key==='ArrowLeft')){event.preventDefault();if(event.key==='ArrowRight'&&current<steps.length-1)showStep(current+1);else if(event.key==='ArrowLeft'&&current>0)showStep(current-1)}})}
-tour.addEventListener('wheel',event=>{if(!card.contains(event.target))event.preventDefault()},{passive:false});tour.addEventListener('touchmove',event=>{if(!card.contains(event.target))event.preventDefault()},{passive:false});
-window.addEventListener('scroll',queuePosition,{passive:true});window.addEventListener('resize',queuePosition);window.visualViewport?.addEventListener('resize',queuePosition);
-window.EntropyGuide=Object.freeze({open:openCenter,start:startTour,close:()=>finish()});
-})();
-</script>
-</body></html>
+    <script defer src="/assets/common.js"></script>
+    <script defer src="/assets/strategy.js"></script>
+    <script defer src="/assets/metrics.js"></script>
+    <script defer src="/assets/charts.js"></script>
+    <script defer src="/assets/dashboard.js"></script>
+    <script defer src="/assets/budget.js"></script>
+    <script defer src="/assets/wallet.js"></script>
+    <script defer src="/assets/events.js"></script>
+    <script defer src="/assets/guide.js"></script>
+  </body>
+</html>

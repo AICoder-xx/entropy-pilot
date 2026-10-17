@@ -1,19 +1,23 @@
 """Local wallet setup. Never return credentials to the browser."""
 from __future__ import annotations
 
-import json
-import os
 import re
 from pathlib import Path
 
 from entropy_bot.credentials import read_wallet_entries, wallet_storage_slug
+from entropy_bot.credential_store import (
+    STORAGE_WINDOWS_DPAPI, encode_wallet_document, read_wallet_document,
+    storage_message,
+)
 from entropy_bot.storage import atomic_write_json
 
 
 def wallet_status(path: Path) -> list[dict]:
     return [{"id": e.wallet_id, "account_address_masked":
              (e.account_address[:6] + "…" + e.account_address[-4:]) if e.account_address else "未填写",
-             "has_private_key": bool(e.private_key), "enabled": e.enabled}
+             "has_private_key": bool(e.private_key), "enabled": e.enabled,
+             "storage": e.storage, "storage_encrypted": e.storage == STORAGE_WINDOWS_DPAPI,
+             "storage_message": storage_message(e.storage)}
             for e in read_wallet_entries(path)]
 
 
@@ -68,7 +72,8 @@ def save_wallet(path: Path, payload: dict) -> None:
         if other_account and other_account.lower() == account.lower():
             raise ValueError("该资金账户已存在，请更新原钱包名称，不能重复启用")
     # Preserve unrelated fields and existing wallet entries. No secret backups.
-    raw = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    raw, _storage = read_wallet_document(path)
+    raw = raw if raw is not None else {}
     if "wallets" not in raw:
         notes = {k: v for k, v in raw.items() if k.startswith("_")}
         raw = {**notes, "wallets": [
@@ -82,6 +87,7 @@ def save_wallet(path: Path, payload: dict) -> None:
         target = {"id": wallet_id, "enabled": True}
         raw["wallets"].append(target)
     target.update(private_key=key, account_address=account.lower())
-    atomic_write_json(path, raw)
-    if os.name != "nt":
-        path.chmod(0o600)
+    # All entries and metadata are encrypted in memory first. The generic
+    # atomic writer therefore only ever writes ciphertext, including its temp
+    # file; a failed encrypt/replace leaves the old file untouched.
+    atomic_write_json(path, encode_wallet_document(raw))

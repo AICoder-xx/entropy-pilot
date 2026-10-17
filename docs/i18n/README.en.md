@@ -97,11 +97,11 @@ Named wallets use their own JSON credentials. For `primary`, process environment
 
 Windows also provides `check_market.bat`, `run_market_maker.bat`, and `run_grid.bat`. Paper fills do not reproduce real queue position, full slippage, or profitability. **Normal dashboard start buttons remain live controls even when CLI defaults are paper.**
 
-Live execution is supported on Windows. On Linux/macOS, restrict your own validation to paper or read-only mode: equivalent signer-level cross-process locking is not implemented, so multiple markets/processes must not share one API signer for live trading. Windows functionality checks are not live-fill or long-term-profit certification.
+Live execution support remains Windows. POSIX locking is implemented, but Linux/macOS live trading and long unattended operation have not been accepted.
 
 ## Credentials, recovery, and statistics
 
-- Keys are stored **in plaintext on your computer** in `wallet.local.json` or your chosen `.env`. The page does not return saved private keys. Never publish these files, `state/`, `logs/`, secret screenshots, or account-bearing diagnostics. Public configuration contains no author account or author proxy address.
+- Windows GUI saves now encrypt the entire wallet file with current-user DPAPI. Legacy plaintext is readable and is upgraded only on an explicit GUI save; `.env` remains plaintext. Non-Windows writes fail closed, and encrypted files are not portable across users or machines. Never publish credentials or account diagnostics. Signing locks now have Windows/POSIX implementations; only Windows has local acceptance evidence. Do not mix old and new running versions. See [engineering boundaries](../ENGINEERING_QUALITY.md).
 - Stop safely and back up your configuration, credentials, and state before updating. Do not import someone else's ledger or delete records to bypass `UNKNOWN`, inventory conflicts, or late fills. Reconcile original exchange orders and positions first.
 - Grid pair profit is not account net profit. Realized price P&L minus fees excludes other components such as funding, unrealized results, transfers, and unpaid rewards. A 30-second markout measures post-fill price movement, not final loss. Missing data is not zero.
 

@@ -146,8 +146,12 @@ def process_alive(pid: int) -> bool:
         )
     try:
         os.kill(pid, 0)
+    except PermissionError:
+        # The process exists; this user is simply not allowed to signal it.
+        return True
     except OSError:
         return False
+    return True
 
 
 def official_snapshot_issue(

@@ -22,6 +22,11 @@ ORDER_INTENT_FINAL_OUTCOMES = {
 }
 
 
+class OrderIntentJournalError(RuntimeError):
+    """Durable identity evidence is damaged; absence cannot authorize a send."""
+    code = "ORDER_STATE_UNCERTAIN"
+
+
 def order_intent_is_pending(row: dict) -> bool:
     """Unknown/malformed outcomes never constitute a submission failure."""
     outcome = str(row.get("outcome") or "")
@@ -242,11 +247,16 @@ class Ledger:
                         if not isinstance(row, dict):
                             raise ValueError("not an object")
                     except (ValueError, TypeError) as exc:
-                        raise RuntimeError(
+                        raise OrderIntentJournalError(
                             f"订单意图日志 {path.name}:{line_number} 损坏；保持 UNKNOWN，禁止自动重试"
                         ) from exc
-                    if row.get("event") not in ORDER_INTENT_EVENTS or not row.get("cloid"):
+                    if row.get("event") not in ORDER_INTENT_EVENTS:
                         continue
+                    if not isinstance(row.get("cloid"), str) or not row["cloid"].strip():
+                        raise OrderIntentJournalError(
+                            f"订单意图日志 {path.name}:{line_number} 缺少有效订单身份；"
+                            "保持 UNKNOWN，禁止自动重试"
+                        )
                     key = (path, str(row["cloid"]))
                     if order_intent_is_pending(row):
                         pending[key] = row
@@ -335,6 +345,7 @@ class Ledger:
         ws_feeds: dict | None = None,
         requote_stats: dict | None = None,
         grid_accounting: dict | None = None,
+        recovery: dict | None = None,
     ) -> None:
         fair = market.fair_px
         account_session_net_pnl = account.equity_actual - session_start_equity
@@ -357,6 +368,7 @@ class Ledger:
             {
                 "status": status,
                 "reason": reason,
+                "recovery": recovery,
                 "session_id": self.session_id,
                 "session_started_at_ms": session_started_at_ms,
                 "updated_at_ms": int(time.time() * 1000),

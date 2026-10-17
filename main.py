@@ -11,6 +11,7 @@ from pathlib import Path
 from entropy_bot.config import ConfigError, load_config
 from entropy_bot.engine import Engine, check_config_live_data
 from entropy_bot.storage import atomic_write_json, read_json, setup_logging
+from entropy_bot.recovery import FailureCode, RecoveryState, failure_record_path
 
 
 def _utf8_console() -> None:
@@ -78,6 +79,16 @@ async def async_main(args: argparse.Namespace) -> int:
     try:
         cfg = load_config(Path(args.config))
     except (OSError, json.JSONDecodeError, ConfigError) as exc:
+        if args.control_file and args.run_id:
+            atomic_write_json(
+                failure_record_path(Path(args.control_file).resolve(), args.run_id),
+                {
+                    "recovery": RecoveryState(
+                        FailureCode.CONFIGURATION_INVALID, startup_read_only=True
+                    ).as_dict(args.run_id),
+                    "updated_at_ms": int(time.time() * 1000),
+                },
+            )
         print(f"配置错误: {exc}", file=sys.stderr)
         return 2
     setup_logging(cfg.runtime.log_dir, args.verbose)

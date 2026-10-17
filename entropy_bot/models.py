@@ -97,7 +97,7 @@ class MarketMeta:
 
     @property
     def size_step(self) -> float:
-        return 10 ** -self.sz_decimals
+        return float(10 ** -self.sz_decimals)
 
     def px_round(self, px: float, round_up: bool) -> float:
         """Hyperliquid price rule: at most 5 significant figures and

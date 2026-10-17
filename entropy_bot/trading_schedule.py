@@ -15,6 +15,7 @@ class TradingScheduleState:
     eastern_now: datetime
     session_open: datetime | None = None
     session_close: datetime | None = None
+    recovery_hold: bool = False
 
 
 # NYSE's published 2026-2028 exceptional early closes. Ordinary full-day
@@ -60,10 +61,10 @@ def _easter_sunday(year: int) -> date:
     g = (b - f + 1) // 3
     h = (19 * a + b - d - g + 15) % 30
     i, k = divmod(c, 4)
-    l = (32 + 2 * e + 2 * i - h - k) % 7
-    m = (a + 11 * h + 22 * l) // 451
-    month = (h + l - 7 * m + 114) // 31
-    day = (h + l - 7 * m + 114) % 31 + 1
+    correction = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * correction) // 451
+    month = (h + correction - 7 * m + 114) // 31
+    day = (h + correction - 7 * m + 114) % 31 + 1
     return date(year, month, day)
 
 
